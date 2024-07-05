@@ -1,0 +1,73 @@
+﻿<Window x:Class="ArchiveNow.Views.ArchiveProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArchiveNow"
+        xmlns:Views="clr-namespace:ArchiveNow.Views"
+        xmlns:Converters="clr-namespace:ArchiveNow.Views.Converters"
+        mc:Ignorable="d"
+        Title="Archiving..." Height="151.938" Width="489.99" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        >
+
+    <!--<Window.DataContext>
+        <Views:ArchiveProgressWindow />
+    </Window.DataContext>-->
+
+
+    <Window.Resources>
+        <Converters:ProgressForegroundConverter x:Key="ProgressForegroundConverter"/>
+        
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+
+        <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=HasAnyError, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Views:ArchiveProgressWindow}}}" Value="false">
+                <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=HasError}" Value="false">-->
+                    <Setter Property="Foreground" Value="Green"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=HasAnyError, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Views:ArchiveProgressWindow}}}" Value="true">
+                    <Setter Property="Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="20,4,20,10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" x:Name="directoryPathTextBox" TextTrimming="CharacterEllipsis" FontWeight="Bold">Directory...
+            <TextBlock.ToolTip>
+                <ToolTip DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}" >
+                    <TextBlock Text="{Binding Text}"/>
+                </ToolTip>
+            </TextBlock.ToolTip>           
+        </TextBlock>
+        <TextBlock Grid.Row="1" x:Name="filePathTextBox" TextTrimming="CharacterEllipsis">File...</TextBlock>
+        <!--<ProgressBar Grid.Row="2" Name="archivingProgressBar" Value="{Binding ElementName=progress, Path=Value}" Background="Cornsilk" />-->
+        <ProgressBar Grid.Row="2" Name="archivingProgressBar" Value="{Binding ElementName=progress, Path=Value}" Background="Cornsilk"
+                     Style="{StaticResource ProgressBarStyle}">
+        </ProgressBar>
+        <TextBlock Grid.Row="2" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        
+        <Button Grid.Row="3" x:Name="_cancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="353,12,0,-16" VerticalAlignment="Top" Width="80" Height="26" Click="OnCancelButtonClick"
+                Visibility="{Binding Path=IsNotFinished, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
+                />
+        <Button Grid.Row="3" x:Name="_pauseButton" IsEnabled="True" Content="Pause" HorizontalAlignment="Left" Margin="264,12,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="OnPauseButtonClick"
+                Visibility="{Binding Path=IsNotFinished, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
+                />
+
+        <Button Grid.Row="3" x:Name="_closeButton" Content="Close" HorizontalAlignment="Left" Margin="353,12,0,-16" VerticalAlignment="Top" Width="80" Height="26" Click="OnCloseButtonClick"
+                Visibility="{Binding Path=IsFinished, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
+                />
+
+    </Grid>
+</Window>

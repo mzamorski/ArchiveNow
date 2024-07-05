@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DeployedProjects>
+    <string>ArchiveNow\ArchiveNow.csproj</string>
+    <string>ArchiveNow.Shell\ArchiveNow.Shell.csproj</string>
+    <string>ArchiveNow.Service\ArchiveNow.Service.csproj</string>
+    <string>ArchiveNow.Utils\ArchiveNow.Utils.csproj</string>
+  </DeployedProjects>
+  <DirectoryMappings>
+    <Item Key="" Value="INSTALLFOLDER" />
+  </DirectoryMappings>
+  <FileMappings />
+  <DeploySymbols>true</DeploySymbols>
+</Configuration>

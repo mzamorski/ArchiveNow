@@ -1,0 +1,2 @@
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Setup\Debug\ArchiveNow.Setup.msi
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Setup\Debug\ArchiveNow.Setup.wixpdb

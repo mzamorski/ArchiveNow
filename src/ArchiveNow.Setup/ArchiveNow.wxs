@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?define ArchiveNow_TargetDir=$(var.ArchiveNow.TargetDir)?>
+  <?define ArchiveNow_Shell_TargetDir=$(var.ArchiveNow.Shell.TargetDir)?>
+  <?define ArchiveNow_RegistryKey_Profiles="Software\[ProductName]\Profiles"?>
+  
+  <Product Id="*" Name="ArchiveNow" Language="1033" Version="1.0.0.0" Manufacturer="Marcin Zamorski" UpgradeCode="ef73c9e1-4dcd-40d2-94ac-efb757a120e4">
+    <Package InstallerVersion="200" Compressed="yes" InstallPrivileges="elevated" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="f_Product" Title="Application" Level="1" ConfigurableDirectory="INSTALLFOLDER">
+      <ComponentGroupRef Id="cg_Product"/>
+      <ComponentGroupRef Id="cg_ProfilesFolder"/>
+    </Feature>
+
+    <Feature Id="f_PredefinedProfiles" Title="Predefined profiles" Level="1">
+      <ComponentGroupRef Id="cg_PredefinedProfiles" />
+    </Feature>
+
+    <!--<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />-->
+
+    <CustomAction Id="InstallShell" FileKey="srm.exe" ExeCommand='install "[INSTALLFOLDER]\ArchiveNow.Shell.dll" -codebase' Execute="deferred" Return="check" Impersonate="no" />
+    <CustomAction Id="UninstallShell" FileKey="srm.exe" ExeCommand='uninstall "[INSTALLFOLDER]\ArchiveNow.Shell.dll"' Execute="deferred" Return="check" Impersonate="no" />
+
+    <UIRef Id="WixUI_FeatureTree" />
+
+    <InstallExecuteSequence>
+      <Custom Action="InstallShell" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="UninstallShell" Before="RemoveFiles">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+
+  <Fragment>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="ArchiveNow" /> 
+      </Directory>
+
+      <Directory Id="AppDataFolder">
+        <Directory Id="d_AppFolder" Name="ArchiveNow">
+          <Directory Id="d_ProfilesFolder" Name="Profiles" />
+        </Directory>
+      </Directory>
+
+    </Directory>
+
+  </Fragment>
+
+  <Fragment>
+
+        
+    <ComponentGroup Id="cg_Product" Directory="INSTALLFOLDER">
+      <ComponentGroupRef Id="ArchiveNow.Output.Files"/>
+      <Component Id="srm.exe" Guid="62b96b86-672f-4726-8d53-fcd4e71cb81f">
+        <File Source="Tools\srm.exe" KeyPath="yes"/>
+      </Component>
+      <Component Id="c_RemoveAppFiles" Guid="2d62c6bf-0813-11e8-bc19-68f728af9d1f">
+        <RemoveFile Id="rf_RemoveAppFiles" Name="*.*" On="both" />
+      </Component>
+      <Component Guid="e92d573b-2417-4fb2-9d32-5aff29a51cc8">
+        <RegistryValue Root="HKCU" Key="Software\[ProductName]" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="cg_ProfilesFolder" Directory="d_ProfilesFolder">
+      <Component Id="c_Test" Guid="1f9cf41e-348c-43c7-aa64-0aaaba67c4e4" Permanent="yes">
+        <RegistryValue Root="HKCU" Key="$(var.ArchiveNow_RegistryKey_Profiles)" Type="string" Value="[d_ProfilesFolder]" KeyPath="yes" />
+        <CreateFolder />
+        
+        <RemoveFolder Id="rd_ProfilesFolder" Directory="d_ProfilesFolder" On="uninstall" />
+        <RemoveFolder Id="rd_AppFolder" Directory="d_AppFolder" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+      
+    <ComponentGroup Id="cg_PredefinedProfiles" Directory="d_ProfilesFolder">
+      <Component Id="c_VisualStudioProfile" Guid="d5cf0098-7ab0-44bf-9600-5acc98298211" Permanent="yes">
+        <File Id="f_VisualStudioProfile" Source="$(var.ArchiveNow.ProjectDir)Data\Profiles\Visual Studio Project.profile" />
+        <RegistryValue Root="HKCU" Key="$(var.ArchiveNow_RegistryKey_Profiles)" Type="string" Name="Visual Studio Project" Value="[#f_VisualStudioProfile]" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+    
+  </Fragment>
+</Wix>

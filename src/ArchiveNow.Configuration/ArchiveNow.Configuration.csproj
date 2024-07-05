@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A7050D26-289C-4FE9-8308-EC0CC471F2AF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ArchiveNow.Configuration</RootNamespace>
+    <AssemblyName>ArchiveNow.Configuration</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\ArchiveNow.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Humanizer">
+      <HintPath>..\packages\Humanizer.Core.2.8.26\lib\netstandard2.0\Humanizer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveNowConfiguration.cs" />
+    <Compile Include="IArchiveNowConfiguration.cs" />
+    <Compile Include="Profiles\ArchiveNowProfile.cs" />
+    <Compile Include="Profiles\ArchiveNowProfileRepository.cs" />
+    <Compile Include="Profiles\CompositeArchiveNowProfile.cs" />
+    <Compile Include="Profiles\ExtendedArchiveNowProfile.cs" />
+    <Compile Include="Profiles\IArchiveNowProfile.cs" />
+    <Compile Include="Profiles\IArchiveNowProfileRepository.cs" />
+    <Compile Include="Profiles\IncorrectArchiveNowProfile.cs" />
+    <Compile Include="Profiles\NullArchiveNowProfile.cs" />
+    <Compile Include="Profiles\NullArchiveNowProfileRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Readers\ArchiveNowConfigurationProvider.cs" />
+    <Compile Include="Readers\ArchiveNowProfileProvider.cs" />
+    <Compile Include="Readers\IConfigurationProvider.cs" />
+    <Compile Include="Readers\JsonConverters\AfterFinishedActionJsonConverter.cs" />
+    <Compile Include="Readers\JsonConverters\ArchiveProviderJsonConverter.cs" />
+    <Compile Include="Readers\JsonConverters\FileNameBuilderJsonConverter.cs" />
+    <Compile Include="Readers\JsonConverters\ProfileJsonConverter.cs" />
+    <Compile Include="Readers\JsonConverters\TestJsonConverter.cs" />
+    <Compile Include="Readers\JsonExtensions.cs" />
+    <Compile Include="Readers\JsonFileConfigurationProvider.cs" />
+    <Compile Include="Readers\JsonResolvers\PropertyFilterSerializerContractResolver.cs" />
+    <Compile Include="Readers\JsonResolvers\WritablePropertiesOnlyResolver.cs" />
+    <Compile Include="Readers\SystemRegistryConfigurationProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ArchiveNow.Actions.Core\ArchiveNow.Actions.Core.csproj">
+      <Project>{1e0f09a7-92bd-40b2-aa8c-f04016cebfa5}</Project>
+      <Name>ArchiveNow.Actions.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.ArchiveProviders.Core\ArchiveNow.Providers.Core.csproj">
+      <Project>{B6974FD5-C1FE-4B06-91B3-C522617AC0D7}</Project>
+      <Name>ArchiveNow.Providers.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Core\ArchiveNow.Core.csproj">
+      <Project>{7076bf8a-260a-4972-9694-7e6a9b61cd61}</Project>
+      <Name>ArchiveNow.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Utils\ArchiveNow.Utils.csproj">
+      <Project>{98C1EC28-C5F8-46F0-A30D-E7D2C4B78374}</Project>
+      <Name>ArchiveNow.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ArchiveNow.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Ensure.That">
+      <Version>10.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="LocalStorage">
+      <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration">
+      <Version>6.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json">
+      <Version>6.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts">
+      <Version>10.0.22000.196</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

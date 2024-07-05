@@ -1,0 +1,6 @@
+1. ArchiveNowCommandLineBuilder
+2. DestinationCopier
+3. Kompresja z haslem z profilu (mo¿e podpis cyfrowy)
+4. Przenieœæ Providery do osobnych projektów by np. 7z.dll nie zaœmieca³ g³ównego serwisu.
+
+Wybór komponentów (Google Drive itp) podczas instalacji.

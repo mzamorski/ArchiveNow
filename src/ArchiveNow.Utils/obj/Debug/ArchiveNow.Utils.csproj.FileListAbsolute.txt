@@ -1,0 +1,14 @@
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Utils.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Utils.pdb
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.csproj.AssemblyReference.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.csproj.CoreCompileInputs.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.csproj.CopyComplete
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Utils.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Utils.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.csproj.AssemblyReference.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.csproj.CoreCompileInputs.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveNow.Utils.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Utils\obj\Debug\ArchiveN.C348CD41.Up2Date

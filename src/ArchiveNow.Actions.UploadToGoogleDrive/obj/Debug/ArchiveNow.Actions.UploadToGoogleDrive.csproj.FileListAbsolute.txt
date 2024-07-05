@@ -1,0 +1,16 @@
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Actions.UploadToGoogleDrive.dll.config
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Actions.UploadToGoogleDrive.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Actions.UploadToGoogleDrive.pdb
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.csproj.AssemblyReference.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.csproj.CoreCompileInputs.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.csproj.CopyComplete
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Actions.UploadToGoogleDrive.dll.config
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Actions.UploadToGoogleDrive.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Actions.UploadToGoogleDrive.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.csproj.AssemblyReference.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.csproj.CoreCompileInputs.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveNow.Actions.UploadToGoogleDrive.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Actions.UploadToGoogleDrive\obj\Debug\ArchiveN.DAE72837.Up2Date
