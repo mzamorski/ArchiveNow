@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<RunWixToolsOutOfProc Condition=" '$(PROCESSOR_ARCHITECTURE)'!='x86' ">true</RunWixToolsOutOfProc>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>ba5b3b52-71ac-4670-95f3-630a7d4d754c</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>ArchiveNow.Setup</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>..\..\bin\Setup\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveNow.Output.wxs" />
+    <Compile Include="ArchiveNow.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ArchiveNow.Output.Transform.xslt" />
+    <Content Include="ArchiveNow.Setup.wax" />
+    <Content Include="Tools\srm.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ArchiveNow.Service\ArchiveNow.Service.csproj">
+      <Name>ArchiveNow.Service</Name>
+      <Project>{2a73f9ec-ecd6-4763-b944-3a36b6503e24}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Shell\ArchiveNow.Shell.csproj">
+      <Name>ArchiveNow.Shell</Name>
+      <Project>{1c17737c-6aaf-47fd-9f23-6270e897b40c}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Utils\ArchiveNow.Utils.csproj">
+      <Name>ArchiveNow.Utils</Name>
+      <Project>{98c1ec28-c5f8-46f0-a30d-e7d2c4b78374}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow\ArchiveNow.csproj">
+      <Name>ArchiveNow</Name>
+      <Project>{0fa87d92-1fa9-44af-82b7-e24bc258a5a7}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tools" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+  <Target Name="BeforeBuild">
+    <PropertyGroup>
+      <!-- <DefineConstants>BINFOLDER=C:\PROJECTS\ArchiveNow\bin\$(Configuration)</DefineConstants> -->
+    </PropertyGroup>
+    <HeatDirectory OutputFile="ArchiveNow.Output.wxs" Directory="$(SolutionDir)\..\bin\$(Configuration)" KeepEmptyDirectories="false" DirectoryRefId="INSTALLFOLDER" 
+	ComponentGroupName="ArchiveNow.Output.Files" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" 
+	GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.ArchiveNow.TargetDir" Transforms="$(ProjectDir)\ArchiveNow.Output.Transform.xslt" RunAsSeparateProcess="$(RunWixToolsOutOfProc)" />
+  </Target>
+</Project>

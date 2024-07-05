@@ -1,0 +1,1 @@
+1. SharpZip tworzy archiwum wraz z głównym folderem.

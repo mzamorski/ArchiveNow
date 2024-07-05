@@ -1,0 +1,12 @@
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Providers.Archive.SevenZip.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Providers.Archive.SevenZip.pdb
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.SevenZip.csproj.AssemblyReference.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.SevenZip.csproj.CoreCompileInputs.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.Archive.SevenZip.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.Archive.SevenZip.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Providers.Archive.SevenZip.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.Providers.Archive.SevenZip.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.SevenZip.csproj.AssemblyReference.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.SevenZip.csproj.CoreCompileInputs.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.Archive.SevenZip.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.Providers.SevenZip\obj\Debug\ArchiveNow.Providers.Archive.SevenZip.pdb

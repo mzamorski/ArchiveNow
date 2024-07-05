@@ -1,0 +1,12 @@
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.UI.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.UI.pdb
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.csproj.AssemblyReference.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.csproj.CoreCompileInputs.cache
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.dll
+E:\PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.UI.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Debug\ArchiveNow.UI.pdb
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.csproj.AssemblyReference.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.csproj.CoreCompileInputs.cache
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.dll
+D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\src\ArchiveNow.UI\obj\Debug\ArchiveNow.UI.pdb
