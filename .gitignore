@@ -1,16 +1,12 @@
-# Ignore Visual Studio temporary files
-*.rsuser
 *.suo
 *.user
-*.userosscache
-*.sln.docstates
 
 # Ignore build results
 [Dd]ebug/
 [Rr]elease/
-x64/
-x86/
-bld/
+bin/
+obj/
+src/.vs/
 
 # Ignore log files
 *.log
@@ -22,4 +18,3 @@ bld/
 # Ignore OS generated files
 Thumbs.db
 Desktop.ini
-$RECYCLE.BIN/
