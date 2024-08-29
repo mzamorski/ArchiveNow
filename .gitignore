@@ -5,9 +5,21 @@
 # Ignore build results
 [Dd]ebug/
 [Rr]elease/
-bin/
-obj/
-src/.vs/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+.vs/
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
 
 # Ignore log files
 *.log
