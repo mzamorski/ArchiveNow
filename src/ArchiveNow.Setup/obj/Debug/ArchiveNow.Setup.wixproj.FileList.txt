@@ -1,7 +1,0 @@
-D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Setup\Debug\ArchiveNow.Setup.msi
-D:\__PROJEKTY\WŁASNE\ArchiveNow\trunk\bin\Setup\Debug\ArchiveNow.Setup.wixpdb
-obj\Debug\ArchiveNow.Output.wixobj
-obj\Debug\ArchiveNow.wixobj
-obj\Debug\ArchiveNow.Setup.wixproj.BindContentsFileListnull.txt
-obj\Debug\ArchiveNow.Setup.wixproj.BindOutputsFileListnull.txt
-obj\Debug\ArchiveNow.Setup.wixproj.BindBuiltOutputsFileListnull.txt
