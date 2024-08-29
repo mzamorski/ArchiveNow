@@ -1,5 +1,6 @@
 *.suo
 *.user
+*.cache
 
 # Ignore build results
 [Dd]ebug/
