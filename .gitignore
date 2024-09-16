@@ -28,6 +28,8 @@ x86/
 *.temp
 *.tmp
 
+*.csproj.user
+
 # Ignore OS generated files
 Thumbs.db
 Desktop.ini
