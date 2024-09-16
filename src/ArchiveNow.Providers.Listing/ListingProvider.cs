@@ -12,9 +12,13 @@ namespace ArchiveNow.Providers.Listing
     /// </summary>
     public class ListingProvider : ArchiveProviderBase
     {
+        private readonly string ErrorHash = "<Failed to compute hash>";
+
         private readonly HashAlgorithm _hashAlgorithm;
         private readonly List<ListingEntry> _entries = new List<ListingEntry>();
         private readonly IListingEntryFormatter _lineFormatter;
+        private readonly IHashFormatter _hashFormatter = new DefaultHashFormatter();
+        private readonly IErrorHashBuilder _errorHashFormatter;
 
         public override string FileExtension => "lst";
 
@@ -22,6 +26,10 @@ namespace ArchiveNow.Providers.Listing
             : base(pathBuilder)
         {
             _hashAlgorithm = MD5.Create();
+            _errorHashFormatter = new DefaultErrorHashBuilder();
+            //_errorHashFormatter = new ZeroErrorHashBuilder(_hashAlgorithm.HashSize);
+
+
             _lineFormatter = DefaultListingEntryFormatter.Instance;
         }
 
@@ -66,11 +74,70 @@ namespace ArchiveNow.Providers.Listing
 
         public string CalculateHash(string filePath)
         {
-            using (var stream = File.OpenRead(filePath))
+            try
             {
-                byte[] hash = _hashAlgorithm.ComputeHash(stream);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                using (var stream = OpenFile(filePath))
+                {
+                    byte[] hash = _hashAlgorithm.ComputeHash(stream);
+                    return _hashFormatter.Format(hash);
+                }
             }
+            catch
+            {
+                return _errorHashFormatter.Build();
+            }
+        }
+
+        private Stream OpenFile(string filePath)
+        {
+            return new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+        }
+    }
+
+    internal interface IHashFormatter
+    {
+        string Format(byte[] hashBytes);
+    }
+
+    internal interface IErrorHashBuilder
+    {
+        string Build();
+    }
+
+    internal class DefaultHashFormatter : IHashFormatter
+    {
+        public string Format(byte[] hashBytes)
+        {
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+        }
+    }
+
+    internal class DefaultErrorHashBuilder : IErrorHashBuilder
+    {
+        private const string Message = "<Failed to compute hash>";
+        public string Build()
+        {
+            return Message;
+        }
+    }
+
+    internal class ZeroErrorHashBuilder : IErrorHashBuilder
+    {
+        private readonly int _hashCharSize;
+        private readonly byte[] _zeroHashBytes;
+        private readonly IHashFormatter _hashFormatter = new DefaultHashFormatter();
+
+        public ZeroErrorHashBuilder(int hashSize)
+        {
+            int hashSizeInBytes = hashSize / 8;
+
+            _zeroHashBytes = new byte[hashSizeInBytes];
+            _hashCharSize = hashSize / 8;
+        }
+
+        public string Build()
+        {
+            return _hashFormatter.Format(_zeroHashBytes);
         }
     }
 
