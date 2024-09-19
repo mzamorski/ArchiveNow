@@ -50,14 +50,9 @@ namespace ArchiveNow.Service
         public ArchiveNowService(IArchiveNowConfiguration configuration, IArchiveNowProfile profile, IArchiveNowLogger logger = null)
         {
             Configuration = configuration;
+            Profile = profile;
+
             _logger = logger ?? EmptyArchiveNowLogger.Instance;
-
-            if (profile == null || profile.IsEmpty)
-            {
-                profile = configuration.DefaultProfile;
-            }
-
-            Profile = (profile ?? NullArchiveNowProfile.Instance);
         }
 
         private void OnActionExecuted(IAfterFinishedAction action, IAfterFinishedActionResult result)

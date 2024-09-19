@@ -317,24 +317,16 @@ namespace ArchiveNow
                     MessageBoxImage.Error);
                 return;
             }
-            
-            bool useIndicatedProfile = (profileFilePath != null);
 
-            IArchiveNowProfile currentProfile;
-            if (useIndicatedProfile)
+            IArchiveNowProfile currentProfile = NullArchiveNowProfile.Instance;
+
+            try
             {
-                var profile = _profileRepository.Open(profileFilePath);
-                if (profile.IsEmpty)
-                {
-                    MessageBox.Show("Profile was not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
-
-                currentProfile = profile;
+                currentProfile = OpenProfile(profileFilePath, configuration);
             }
-            else
+            catch (IOException)
             {
-                currentProfile = NullArchiveNowProfile.Instance;
+                MessageBox.Show("Profile was not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
             var service = new ArchiveNowService(configuration, currentProfile, _logger);
@@ -363,6 +355,23 @@ namespace ArchiveNow
                 var progress = new ArchiveProgressWindow(service, path);
                 progress.ShowDialog();
             }
+        }
+
+        private IArchiveNowProfile OpenProfile(string profileFilePath, IArchiveNowConfiguration configuration = null)
+        {
+            IArchiveNowProfile profile;
+
+            bool useUserProfile = (profileFilePath != null);
+            if (useUserProfile)
+            {
+                profile = _profileRepository.Open(profileFilePath);
+            }
+            else
+            {
+                profile = configuration?.DefaultProfile;
+            }
+
+            return profile ?? NullArchiveNowProfile.Instance;
         }
     }
 }
