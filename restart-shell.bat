@@ -24,6 +24,10 @@ echo The current directory is: "%CD%"
 
 %SrmPath% uninstall ArchiveNow.Shell.dll && taskkill /F /IM explorer.exe && explorer.exe
 
+ for /r "%AppFolder%" %%f in (*) do (
+        if /i not "%%~nxf"=="srm.exe" if /i not "%%~nxf"=="ArchiveNow.conf" del /f /q "%%f"
+    )
+
 copy "%ProjectBinFolder%\*.dll" "%AppFolder%"
 copy "%ProjectBinFolder%\*.exe" "%AppFolder%"
 
