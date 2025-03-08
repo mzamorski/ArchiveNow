@@ -51,7 +51,6 @@
     <Compile Include="AfterFinishedActionContext.cs" />
     <Compile Include="AfterFinishedActionBase.cs" />
     <Compile Include="AfterFinishedActionEventArgs.cs" />
-    <Compile Include="AfterFinishedActionFactory.cs" />
     <Compile Include="AfterFinishedActionProgress.cs" />
     <Compile Include="CompositeAction.cs" />
     <Compile Include="Contexts\MailContext.cs" />

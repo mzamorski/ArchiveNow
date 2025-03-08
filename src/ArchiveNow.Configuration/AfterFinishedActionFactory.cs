@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.IO;
+using ArchiveNow.Actions.Core;
 using ArchiveNow.Actions.Core.Contexts;
+using ArchiveNow.Actions.UploadToGoogleDrive;
 using ArchiveNow.Utils.Windows;
 
-namespace ArchiveNow.Actions.Core
+namespace ArchiveNow.Configuration
 {
     public class AfterFinishedActionFactory
     {
@@ -30,17 +32,23 @@ namespace ArchiveNow.Actions.Core
                     break;
 
                 case "UploadToGoogleDrive":
-                    return NullAction.Instance;
+                    //return NullAction.Instance;
                     //throw new NotImplementedException("UploadToGoogleDrive");
 
-                    //var googleDriveContext = new GoogleDriveContext
+                    var secretKeyFilePath = GetValue<string>(parameters, "SecretKeyFilePath");
+                    //if (!Path.IsPathRooted(secretKeyFilePath))
                     //{
-                    //    SecretKeyFilePath = GetValue<string>(parameters, "SecretKeyFilePath"),
-                    //    DestinationFolderId = GetValue<string>(parameters, "DestinationFolderId")
-                    //};
+                    //    secretKeyFilePath = Path.Combine(Directory.GetCurrentDirectory(), secretKeyFilePath);
+                    //}
 
-                    //creator = (() => new UploadToGoogleDriveAction(googleDriveContext));
-                    //break;
+                    var googleDriveContext = new GoogleDriveContext
+                    {
+                        SecretKeyFilePath = secretKeyFilePath,
+                        DestinationFolderId = GetValue<string>(parameters, "DestinationFolderId")
+                    };
+
+                    creator = (() => new UploadToGoogleDriveAction(googleDriveContext));
+                    break;
 
                 case "SetClipboard":
                     creator = (() => new SetClipboardAction(new ClipboardService()));

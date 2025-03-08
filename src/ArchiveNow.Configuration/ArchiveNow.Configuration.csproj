@@ -47,6 +47,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AfterFinishedActionFactory.cs" />
     <Compile Include="ArchiveNowConfiguration.cs" />
     <Compile Include="IArchiveNowConfiguration.cs" />
     <Compile Include="Profiles\ArchiveNowProfile.cs" />
@@ -78,6 +79,10 @@
       <Project>{1e0f09a7-92bd-40b2-aa8c-f04016cebfa5}</Project>
       <Name>ArchiveNow.Actions.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Actions.UploadToGoogleDrive\ArchiveNow.Actions.UploadToGoogleDrive.csproj">
+      <Project>{a2d88ce7-909f-4db7-b05b-9ae79a9eae3f}</Project>
+      <Name>ArchiveNow.Actions.UploadToGoogleDrive</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ArchiveNow.ArchiveProviders.Core\ArchiveNow.Providers.Core.csproj">
       <Project>{B6974FD5-C1FE-4B06-91B3-C522617AC0D7}</Project>
       <Name>ArchiveNow.Providers.Core</Name>
@@ -92,7 +97,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="ArchiveNow.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +117,9 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>9.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

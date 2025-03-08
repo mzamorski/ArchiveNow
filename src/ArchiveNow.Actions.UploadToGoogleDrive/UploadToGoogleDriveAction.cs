@@ -29,6 +29,7 @@ namespace ArchiveNow.Actions.UploadToGoogleDrive
         public UploadToGoogleDriveAction(GoogleDriveContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context.Validate();
         }
 
         private UserCredential CreateCredential()
