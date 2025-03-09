@@ -29,7 +29,7 @@
 		{
 			"Name": "UploadToGoogleDrive",
 			"Context": {
-				"SecretKeyFilePath": "E:\\PROJEKTY\\WŁASNE\\ArchiveNow\\trunk\\env\\Profiles\\marcin.zamorski@gmail.com.json",
+				"SecretKeyFilePath": "GoogleDriveCredentials.json",
 				"DestinationFolderId": "1fICLyjLPBSm3phufBdAnjzKcG29twQ81",
 			}
 		}

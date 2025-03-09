@@ -17,7 +17,7 @@
 		"\\.(7z|zip|rar)$"
     ],
     "FileNameBuilder":"AddDateTime",
-    "Password":"ronin.135",
+    "Password":"test",
     "UsePlainTextPasswords":true,
     "ProviderName":"SystemZip",
 	"UseDefaultActionPrecedence": "true",
@@ -26,12 +26,12 @@
         {
 			"Name": "SendToMailBox",
 			"Context": {
-				"Host": "pl-ex01.kruk-inkaso.com.pl",
-				"Port": null,
+				"Host": "smtp.gmail.com",
+				"Port": 587,
 				"UserName": null,
 				"Password": null,
-				"Recipient": "marcin.zamorski@kruksa.pl",
-				"Sender": "marcin.zamorski@kruksa.pl",
+				"Recipient": "marcin.zamorski@gmail.com",
+				"Sender": "marcin.zamorski@gmail.com",
 				"Subject": null
 			}
 		},
