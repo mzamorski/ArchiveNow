@@ -145,7 +145,6 @@
     <Compile Include="ArchiveProviders\EmptyArchiveProvider.cs" />
     <Compile Include="ArchiveProviders\IBatchableArchiveProvider.cs" />
     <Compile Include="ArchiveProviders\PasswordService.cs" />
-    <Compile Include="ArchiveProviders\SevenZipSharpArchiveProvider.cs" />
     <Compile Include="ArchiveProviders\SharpZipArchiveProvider.cs" />
     <Compile Include="ArchiveProviders\SystemZipArchiveProvider.cs" />
     <Compile Include="ArchiveResult.cs" />
@@ -209,15 +208,14 @@
       <Project>{1C21CEED-48B9-42A7-ABD8-2F4118D42600}</Project>
       <Name>ArchiveNow.Providers.MsiPackage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Providers.SevenZip\ArchiveNow.Providers.SevenZip.csproj">
+      <Project>{104c1abc-bc0d-44ec-b984-31b2e42a59ff}</Project>
+      <Name>ArchiveNow.Providers.SevenZip</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ArchiveNow.Utils\ArchiveNow.Utils.csproj">
       <Project>{98C1EC28-C5F8-46F0-A30D-E7D2C4B78374}</Project>
       <Name>ArchiveNow.Utils</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="7z.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />

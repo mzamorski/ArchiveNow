@@ -10,14 +10,14 @@ using SevenZip;
 
 namespace ArchiveNow.Service.ArchiveProviders
 {
-    public class SevenZipSharpArchiveProvider : ArchiveProviderBase
+    public class SevenZipArchiveProvider : ArchiveProviderBase
     {
         private readonly SevenZipCompressor _compressor;
         private readonly IList<string> _paths = new List<string>();
 
         public override string FileExtension => "7z";
 
-        public SevenZipSharpArchiveProvider(IArchiveFilePathBuilder archiveFilePathBuilder, IPasswordProvider passwordProvider)
+        public SevenZipArchiveProvider(IArchiveFilePathBuilder archiveFilePathBuilder, IPasswordProvider passwordProvider)
             : base(archiveFilePathBuilder, passwordProvider)
         {
             _compressor = new SevenZipCompressor

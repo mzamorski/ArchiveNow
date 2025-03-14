@@ -19,7 +19,7 @@ namespace ArchiveNow.Service.ArchiveProviders
                         {
                             "SevenZip",
                             (pathBuilder, entryTransform, passwordProvider) =>
-                                new SevenZipSharpArchiveProvider(pathBuilder, passwordProvider)
+                                new SevenZipArchiveProvider(pathBuilder, passwordProvider)
                         },
                         {
                             "SharpZip",
