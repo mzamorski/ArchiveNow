@@ -7,7 +7,7 @@ namespace ArchiveNow.Actions.Core
 {
     public class EncryptAction : AfterFinishedActionBase
     {
-        private readonly EncryptionService _service = new EncryptionService();
+        private readonly AsymmetricEncryptionService _service = new AsymmetricEncryptionService();
         private readonly string _publicKeyFilePath;
 
         public EncryptAction(string publicKeyFilePath)

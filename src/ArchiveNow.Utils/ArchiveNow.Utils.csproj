@@ -61,7 +61,7 @@
     <Compile Include="IO\PathHelper.cs" />
     <Compile Include="Percent.cs" />
     <Compile Include="PercentExtensions.cs" />
-    <Compile Include="Security\EncryptionService.cs" />
+    <Compile Include="Security\AsymmetricEncryptionService.cs" />
     <Compile Include="Exceptions\InvalidPathException.cs" />
     <Compile Include="Exceptions\PathNotFoundException.cs" />
     <Compile Include="Security\IEncryptionService.cs" />
