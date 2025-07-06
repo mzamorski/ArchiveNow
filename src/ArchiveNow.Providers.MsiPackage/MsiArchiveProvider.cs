@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
-
+using System.Linq;
+using System.Threading;
 using ArchiveNow.Core;
 using ArchiveNow.Providers.Core;
 using ArchiveNow.Providers.Core.EntryTransforms;
@@ -12,16 +13,21 @@ using ArchiveNow.Providers.Core.PasswordProviders;
 using WixSharp;
 using WixSharp.CommonTasks;
 using WixSharp.Controls;
-
-using WixFile = WixSharp.File;
+using File = WixSharp.File;
 
 namespace ArchiveNow.Providers.MsiPackage
 {
     public class MsiArchiveProvider : ArchiveProviderBase
     {
+        private const string AppName = "ArchiveNow";
+
         private readonly IArchiveEntryTransform _entryTransform;
         private readonly Project _project;
         private readonly InstallDir _installDir;
+
+        private readonly Dictionary<string, Dir> _dirMap;
+        private string _basePath;
+        private Dir _rootDir;
 
         public override string FileExtension => "msi";
 
@@ -30,37 +36,37 @@ namespace ArchiveNow.Providers.MsiPackage
         {
             _entryTransform = entryTransform;
 
-            string archiveFileName = Path.GetFileNameWithoutExtension(ArchiveFilePath);
+            SimulateLatency = true;
+
+            var archiveFileName = Path.GetFileNameWithoutExtension(ArchiveFilePath);
+            var outputDirectory = Path.GetDirectoryName(ArchiveFilePath) ?? throw new InvalidOperationException("ArchiveFilePath is null or invalid.");
+            var sourceDirectoryPath = entryTransform.RootPath;
 
             Compiler.EmitRelativePaths = true;
             Compiler.PreserveTempFiles = true;
             Compiler.ToolsOutputReceived += CompilerOnToolsOutputReceived;
 
-            _project = new Project("ArchiveNow")
+            _project = new Project(AppName)
             {
                 GUID = Guid.NewGuid(),
                 UI = WUI.WixUI_InstallDir,
                 Language = CultureInfo.CurrentCulture.Name,
                 InstallPrivileges = InstallPrivileges.limited,
-                ControlPanelInfo = new ProductInfo {Manufacturer = "ArchiveNow"},
-                OutFileName = archiveFileName
+                ControlPanelInfo = new ProductInfo { Manufacturer = AppName },
+                OutFileName = archiveFileName,
+                OutDir = outputDirectory,
+                SourceBaseDir = sourceDirectoryPath
             };
 
             _project.RemoveDialogsBetween(NativeDialogs.WelcomeDlg, NativeDialogs.InstallDirDlg);
 
-            _installDir = new InstallDir(_entryTransform.RootPath);
+            _installDir = new InstallDir(archiveFileName);
             _project.AddDir(_installDir);
 
-            //_project.Load += ProjectOnLoad;
-            //_project.BeforeInstall += args =>
-            //{
-            //    args.InstallDir = Directory.GetCurrentDirectory();
-            //};
-        }
-
-        private void ProjectOnLoad(SetupEventArgs e)
-        {
-            //e.Session["InstallDir"] = @"F:\";
+            _dirMap = new Dictionary<string, Dir>(StringComparer.OrdinalIgnoreCase)
+            {
+                [string.Empty] = _installDir
+            };
         }
 
         private void CompilerOnToolsOutputReceived(string data)
@@ -71,39 +77,47 @@ namespace ArchiveNow.Providers.MsiPackage
         public override void AddDirectory(string path)
         {
             var relPath = _entryTransform.Transform(path);
+            string[] parts = relPath.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 
-            //_project.AddDir(new Dir(relPath));
+            string currentPath = string.Empty;
+            Dir current = _installDir;
+
+            foreach (var part in parts)
+            {
+                currentPath = Path.Combine(currentPath, part);
+
+                if (!_dirMap.TryGetValue(currentPath, out Dir next))
+                {
+                    next = new Dir(part);
+
+                    if (current.Dirs == null)
+                        current.Dirs = new[] { next };
+                    else
+                        current.Dirs = current.Dirs.Concat(new[] { next }).ToArray();
+
+                    _dirMap[currentPath] = next;
+                }
+
+                current = next;
+            }
+
+            ApplySimulateLatency(1);
         }
 
         public override void Add(string path)
         {
-            //var relPath = _entryTransform.Transform(path);
+            var relPath = _entryTransform.Transform(path);
+            var parentDir = Path.GetDirectoryName(relPath);
 
-            var directoryPath = Path.GetDirectoryName(path);
-            Dir dir;
-
-            if (string.IsNullOrWhiteSpace(directoryPath))
+            if (!_dirMap.TryGetValue(parentDir, out Dir targetDir))
             {
-                dir = _installDir;
-            }
-            else
-            {
-                dir = _project.FindDir(directoryPath) ?? new Dir(directoryPath);
+                throw new InvalidOperationException($"Cannot add file '{path}' because directory '{parentDir}' was not added via AddDirectory().");
             }
 
-            dir.AddFile(new WixFile(path));
+            var list = new List<File>(targetDir.Files) { new File(path) };
+            targetDir.Files = list.ToArray();
 
-            //if (directoryPath != null)
-            //{
-            //    var directories = directoryPath.Split(Path.DirectorySeparatorChar);
-            //    foreach (var directory in directories)
-            //    {
-                    
-            //    }
-            //}
-
-            //_project.AddDir(new Dir("[INSTALLDIR]", new Files(path)));
-            _project.AddDir(dir);
+            ApplySimulateLatency(1);
         }
 
         public override void BeginUpdate()
@@ -111,7 +125,7 @@ namespace ArchiveNow.Providers.MsiPackage
 
         public override void CommitUpdate()
         {
-            var path = Compiler.BuildMsi(_project);
+            var path = _project.BuildMsi();
             if (path == null)
             {
                 throw new ArchiveNowException($"{nameof(MsiArchiveProvider)}: Unable to create output file!");

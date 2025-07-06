@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading;
 using ArchiveNow.Providers.Core.PasswordProviders;
 using ArchiveNow.Utils;
 
@@ -14,6 +14,8 @@ namespace ArchiveNow.Providers.Core
         public string Password => PasswordProvider.Password.ConvertToString();
 
         public string ArchiveFilePath { get; }
+
+        public bool SimulateLatency { get; set; } = false;
 
         public event EventHandler FileCompressionStarted;
         public event EventHandler FileCompressed;
@@ -42,6 +44,14 @@ namespace ArchiveNow.Providers.Core
         public abstract void CommitUpdate();
 
         public abstract void AbortUpdate();
+
+        protected void ApplySimulateLatency(int milliseconds = 100)
+        {
+            if (SimulateLatency)
+            {
+                Thread.Sleep(milliseconds);
+            }
+        }
 
         protected virtual void OnFileCompressed()
         {

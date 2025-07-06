@@ -50,15 +50,24 @@ namespace ArchiveNow.Service.SearchFileProvider
         /// <returns>List of filtered files (read only)</returns>
         public IEnumerable<FileSystemInfo> GetEntries(string directoryPath)
         {
+            return GetEntries(directoryPath, sortDirectoriesByDepth: false);
+        }
+
+        private IEnumerable<FileSystemInfo> GetEntries(string directoryPath, bool sortDirectoriesByDepth = false)
+        {
             var result = DirectoryBrowser.BrowseDirectory(directoryPath, _searchBehavior, _browserFilters);
 
-            return (
-                new ReadOnlyCollectionBuilder<FileSystemInfo>(
-                    result.Directories
-                    .Cast<FileSystemInfo>()
-                    .Concat(result.Files)
-                )
-            ).ToReadOnlyCollection();
+            IEnumerable<DirectoryInfo> directories = result.Directories;
+
+            if (sortDirectoriesByDepth)
+            {
+                directories = directories.OrderBy(dir => dir.FullName.Count(c => c == Path.DirectorySeparatorChar));
+            }
+
+            var entries = directories.Cast<FileSystemInfo>().Concat(result.Files);
+
+            return new ReadOnlyCollectionBuilder<FileSystemInfo>(entries)
+                .ToReadOnlyCollection();
         }
     }
 }
