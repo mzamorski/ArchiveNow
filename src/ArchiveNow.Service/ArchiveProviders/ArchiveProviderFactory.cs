@@ -6,7 +6,6 @@ using ArchiveNow.Providers.Core.PasswordProviders;
 using ArchiveNow.Providers.Listing;
 using ArchiveNow.Providers.Lz4;
 using ArchiveNow.Providers.MsiPackage;
-using ArchiveNow.Providers.RoboCopy;
 
 namespace ArchiveNow.Service.ArchiveProviders
 {
@@ -45,11 +44,11 @@ namespace ArchiveNow.Service.ArchiveProviders
                             (pathBuilder, entryTransform, passwordProvider) =>
                                 new MsiArchiveProvider(pathBuilder, entryTransform, passwordProvider)
                         },
-                        {
-                            "RoboCopy",
-                            (pathBuilder, entryTransform, passwordProvider) =>
-                                new RoboCopyArchiveProvider(pathBuilder)
-                        },
+                        //{
+                        //    "RoboCopy",
+                        //    (pathBuilder, entryTransform, passwordProvider) =>
+                        //        new RoboCopyArchiveProvider(pathBuilder)
+                        //},
                         {
                             "Listing",
                             (pathBuilder, entryTransform, passwordProvider) =>
