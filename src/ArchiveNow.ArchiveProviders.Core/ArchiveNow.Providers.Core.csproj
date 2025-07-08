@@ -77,6 +77,7 @@
     <Compile Include="FileNameBuilders\LeaveOriginalFileNameBuilder.cs" />
     <Compile Include="FileNameBuilders\ParentDirectoryNameFileNameBuilder.cs" />
     <Compile Include="FileNameBuilders\RandomFileNameBuilder.cs" />
+    <Compile Include="FileNameBuilders\RenameFileNameBuilder.cs" />
     <Compile Include="IArchiveFilePathBuilder.cs" />
     <Compile Include="IArchiveProvider.cs" />
     <Compile Include="PasswordProviders\IPasswordProvider.cs" />

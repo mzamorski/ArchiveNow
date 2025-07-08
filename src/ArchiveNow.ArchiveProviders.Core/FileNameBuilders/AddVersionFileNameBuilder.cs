@@ -31,14 +31,4 @@ namespace ArchiveNow.Providers.Core.FileNameBuilders
             return $"{fileName}-{currentVersion.ToString(2)}";
         }
     }
-
-    public class RenameFileNameBuilder : IFileNameBuilder
-    {
-        public string Name { get; } = "Enshrouded";
-
-        string IFileNameBuilder.Build(IFileNameBuilderContext context)
-        {
-            return Name;
-        }
-    }
 }
