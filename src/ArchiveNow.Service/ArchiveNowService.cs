@@ -22,6 +22,7 @@ using ArchiveNow.Utils;
 using ArchiveNow.Utils.IO;
 using ArchiveNow.Utils.Threading;
 using ArchiveNow.Utils.Windows;
+using EnsureThat;
 
 namespace ArchiveNow.Service
 {
@@ -103,8 +104,7 @@ namespace ArchiveNow.Service
             Commit?.Invoke(this, archiveFilePath);
         }
 
-        public void Archive(string sourcePath, IArchiveNowProgress progressIndicator,
-            CancellationToken cancelToken, PauseToken pauseToken)
+        public void Archive(string sourcePath, IArchiveNowProgress progressIndicator, CancellationToken cancelToken, PauseToken pauseToken)
         {
             // Expand the path - this is necessary if the path is relative (eg. contains dot "." or double-dots "..")
             sourcePath = Path.GetFullPath(sourcePath);
@@ -261,15 +261,20 @@ namespace ArchiveNow.Service
         }
 
         private async Task<IArchiveResult> ArchiveAsync(ArchiveContext context,
-            IArchiveNowProgress progressIndicator, CancellationToken cancelToken, PauseToken pauseToken)
+           IArchiveNowProgress progressIndicator, CancellationToken cancelToken, PauseToken pauseToken)
         {
+            EnsureArg.IsNotNull(context, nameof(context));
+            EnsureArg.IsNotNull(context, nameof(progressIndicator));
+
             IArchiveProvider archiveProvider = context.Provider;
+            archiveProvider.IsProgressIndeterminateChanged += (sender, isIndeterminate) =>
+            {
+                progressIndicator.IsIndeterminate = isIndeterminate;
+            };
 
             archiveProvider.BeginUpdate();
 
             var report = new ArchiveNowProgressReport(context.Entries.Count);
-
-            //TryHandleTooLongPath(context.SourcePath);
 
             using (var performance = new PerformanceTester())
             {
@@ -318,6 +323,7 @@ namespace ArchiveNow.Service
                 };
 
                 OnCommit(archiveProvider.ArchiveFilePath);
+                progressIndicator?.Report(report);
 
                 try
                 {

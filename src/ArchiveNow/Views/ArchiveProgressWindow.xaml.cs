@@ -209,6 +209,11 @@ namespace ArchiveNow.Views
 
         private void OnReportProgress(ArchiveNowProgressReport value)
         {
+            if (value.IsIndeterminate)
+            {
+                archivingProgressBar.IsIndeterminate = true;
+            }
+
             archivingProgressBar.Value = value.ProcessedEntriesCount;
         }
 

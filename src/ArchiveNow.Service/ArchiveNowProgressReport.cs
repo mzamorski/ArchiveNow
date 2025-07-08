@@ -10,6 +10,8 @@ namespace ArchiveNow.Service
             ProcessedEntriesCount = 0;
         }
 
+        public bool IsIndeterminate { get; set; }
+
         public int TotalEntriesCount { get; }
 
         public int ProcessedEntriesCount { get; set; }

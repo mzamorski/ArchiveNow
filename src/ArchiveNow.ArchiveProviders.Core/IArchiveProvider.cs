@@ -24,6 +24,7 @@ namespace ArchiveNow.Providers.Core
         event EventHandler FileCompressed;
         event EventHandler Finished;
         event EventHandler<int> Starting;
+        event EventHandler<bool> IsProgressIndeterminateChanged;
     }
 
 }

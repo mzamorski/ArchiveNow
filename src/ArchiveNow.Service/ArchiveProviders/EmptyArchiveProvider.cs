@@ -37,5 +37,6 @@ namespace ArchiveNow.Service.ArchiveProviders
         public event EventHandler FileCompressed;
         public event EventHandler Finished;
         public event EventHandler<int> Starting;
+        public event EventHandler<bool> IsProgressIndeterminateChanged;
     }
 }

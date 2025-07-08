@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
+
 using ArchiveNow.Core;
 using ArchiveNow.Providers.Core;
 using ArchiveNow.Providers.Core.EntryTransforms;
@@ -24,10 +24,7 @@ namespace ArchiveNow.Providers.MsiPackage
         private readonly IArchiveEntryTransform _entryTransform;
         private readonly Project _project;
         private readonly InstallDir _installDir;
-
         private readonly Dictionary<string, Dir> _dirMap;
-        private string _basePath;
-        private Dir _rootDir;
 
         public override string FileExtension => "msi";
 
@@ -91,9 +88,13 @@ namespace ArchiveNow.Providers.MsiPackage
                     next = new Dir(part);
 
                     if (current.Dirs == null)
+                    {
                         current.Dirs = new[] { next };
+                    }
                     else
+                    {
                         current.Dirs = current.Dirs.Concat(new[] { next }).ToArray();
+                    }
 
                     _dirMap[currentPath] = next;
                 }
@@ -121,10 +122,14 @@ namespace ArchiveNow.Providers.MsiPackage
         }
 
         public override void BeginUpdate()
-        { }
+        {
+            CurrentProgressMode = ProgressMode.Determinate;
+        }
 
         public override void CommitUpdate()
         {
+            CurrentProgressMode = ProgressMode.Indeterminate;
+
             var path = _project.BuildMsi();
             if (path == null)
             {

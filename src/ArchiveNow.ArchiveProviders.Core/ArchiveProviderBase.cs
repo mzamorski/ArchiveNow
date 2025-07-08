@@ -17,10 +17,35 @@ namespace ArchiveNow.Providers.Core
 
         public bool SimulateLatency { get; set; } = false;
 
+        protected enum ProgressMode
+        {
+            Determinate,
+            Indeterminate
+        }
+
+        private ProgressMode _currentProgressMode;
+
+        protected ProgressMode CurrentProgressMode
+        {
+            get => _currentProgressMode;
+            set
+            {
+                if (_currentProgressMode != value)
+                {
+                    _currentProgressMode = value;
+                    OnIsProgressIndeterminateChanged(IsProgressIndeterminate);
+                }
+            }
+        }
+
+        public bool IsProgressIndeterminate => CurrentProgressMode == ProgressMode.Indeterminate;
+
         public event EventHandler FileCompressionStarted;
         public event EventHandler FileCompressed;
         public event EventHandler Finished;
         public event EventHandler<int> Starting;
+        //public event EventHandler<ProgressMode> ProgressModeChanged;
+        public event EventHandler<bool> IsProgressIndeterminateChanged;
 
         protected ArchiveProviderBase(
             IArchiveFilePathBuilder archiveFilePathBuilder,
@@ -71,6 +96,11 @@ namespace ArchiveNow.Providers.Core
         protected virtual void OnStarting(int fileCount)
         {
             Starting?.Invoke(this, fileCount);
+        }
+
+        protected virtual void OnIsProgressIndeterminateChanged(bool newValue)
+        {
+            IsProgressIndeterminateChanged?.Invoke(this, newValue);
         }
 
         public virtual void Dispose()
