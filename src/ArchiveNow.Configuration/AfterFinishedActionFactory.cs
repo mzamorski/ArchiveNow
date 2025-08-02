@@ -50,6 +50,16 @@ namespace ArchiveNow.Configuration
                     creator = (() => new UploadToGoogleDriveAction(googleDriveContext));
                     break;
 
+                case "SendToArchiveNow":
+                    var remoteContext = new RemoteInstanceContext
+                    {
+                        Host = GetValue<string>(parameters, "Host"),
+                        Port = GetValue<int>(parameters, "Port")
+                    };
+
+                    creator = (() => new SendToArchiveNowAction(remoteContext));
+                    break;
+
                 case "SetClipboard":
                     creator = (() => new SetClipboardAction(new ClipboardService()));
                     break;
