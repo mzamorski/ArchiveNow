@@ -24,10 +24,12 @@ namespace ArchiveNow.Configuration
 
         public bool HasDefaultProfile => !DefaultProfile.IsEmpty;
 
+        public int RemoteUploadPort { get; set; } = 5000;
+
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"ShowSummary: {ShowSummary}\nDefaultProfile: {DefaultProfile}");
+            builder.AppendLine($"ShowSummary: {ShowSummary}\nDefaultProfile: {DefaultProfile}\nRemoteUploadPort: {RemoteUploadPort}");
             builder.AppendLine("Maps:");
             foreach (var item in DirectoryProfileMap)
             {

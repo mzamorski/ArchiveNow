@@ -57,7 +57,7 @@ namespace ArchiveNow.Service
             _logger = logger ?? EmptyArchiveNowLogger.Instance;
 
             var uploadsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "incoming");
-            _remoteUploadService = new RemoteUploadService(5000, uploadsPath);
+            _remoteUploadService = new RemoteUploadService(configuration.RemoteUploadPort, uploadsPath);
             _remoteUploadService.Start();
         }
 
