@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using ArchiveNow.Actions.Core.Contexts;
 using ArchiveNow.Actions.Core.Result;
 
@@ -23,6 +24,7 @@ namespace ArchiveNow.Actions.Core
             : base(precedence: 7)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
+
             _host = context.Host;
             _port = context.Port;
         }
@@ -35,11 +37,16 @@ namespace ArchiveNow.Actions.Core
             try
             {
                 var target = new UriBuilder("http", _host, _port, "/upload").Uri;
+                if (string.IsNullOrWhiteSpace(context.InputPath) || !File.Exists(context.InputPath))
+                {
+                    throw new FileNotFoundException("Input file not found", context.InputPath);
+                }
+
                 using (var client = new HttpClient())
                 using (var stream = File.OpenRead(context.InputPath))
                 using (var content = new StreamContent(stream))
                 {
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                     content.Headers.Add("X-FileName", Path.GetFileName(context.InputPath));
 
                     var response = client.PostAsync(target, content).Result;
