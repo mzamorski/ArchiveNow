@@ -29,6 +29,7 @@ namespace ArchiveNow.Service
     public class ArchiveNowService : IArchiveNowService
     {
         private readonly IArchiveNowLogger _logger;
+        private readonly RemoteUploadService _remoteUploadService;
 
         public event EventHandler<string> FileAdded;
         public event EventHandler<string> FileAdding;
@@ -54,6 +55,10 @@ namespace ArchiveNow.Service
             Profile = profile;
 
             _logger = logger ?? EmptyArchiveNowLogger.Instance;
+
+            var uploadsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "incoming");
+            _remoteUploadService = new RemoteUploadService(5000, uploadsPath);
+            _remoteUploadService.Start();
         }
 
         private void OnActionExecuted(IAfterFinishedAction action, IAfterFinishedActionResult result)
