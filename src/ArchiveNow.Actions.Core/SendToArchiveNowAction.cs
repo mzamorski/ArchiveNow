@@ -40,6 +40,8 @@ namespace ArchiveNow.Actions.Core
                 using (var content = new StreamContent(stream))
                 {
                     content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+                    content.Headers.Add("X-FileName", Path.GetFileName(context.InputPath));
+
                     var response = client.PostAsync(target, content).Result;
                     if (!response.IsSuccessStatusCode)
                     {
