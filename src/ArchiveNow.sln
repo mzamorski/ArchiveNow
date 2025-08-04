@@ -55,7 +55,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Configuration.Storages", "ArchiveNow.Configuration.Storages\ArchiveNow.Configuration.Storages.csproj", "{EFC44E4D-FBF0-4F15-AE17-D413A249FF8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Providers.Listing", "ArchiveNow.Providers.Listing\ArchiveNow.Providers.Listing.csproj", "{9DE82421-3B3F-4B89-8585-7E87F615B1D6}"
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteUploadHost", "RemoteUploadHost\RemoteUploadHost.csproj", "{5CF6FE83-5238-46F1-8102-FCC58BE19F79}"
 EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -230,6 +233,16 @@ Global
 		{9DE82421-3B3F-4B89-8585-7E87F615B1D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9DE82421-3B3F-4B89-8585-7E87F615B1D6}.Release|x86.ActiveCfg = Release|Any CPU
 		{9DE82421-3B3F-4B89-8585-7E87F615B1D6}.Release|x86.Build.0 = Release|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Debug|x86.Build.0 = Debug|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Release|x86.ActiveCfg = Release|Any CPU
+		{5CF6FE83-5238-46F1-8102-FCC58BE19F79}.Release|x86.Build.0 = Release|Any CPU
+
+
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
