@@ -152,6 +152,7 @@
     <Compile Include="Helpers\PerformanceTester.cs" />
     <Compile Include="IArchiveNowService.cs" />
     <Compile Include="IArchiveResult.cs" />
+    <Compile Include="RemoteUploadService.cs" />
     <Compile Include="SearchFileProvider\FilterableSearchProvider.cs" />
     <Compile Include="SearchFileProvider\Filters\ISearchFilter.cs" />
     <Compile Include="SearchFileProvider\OutputType.cs" />

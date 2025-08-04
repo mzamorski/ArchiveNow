@@ -13,5 +13,7 @@ namespace ArchiveNow.Configuration
         bool HasDefaultProfile { get; }
 
         bool ShowSummary { get; set; }
+
+        int RemoteUploadPort { get; set; }
     }
 }

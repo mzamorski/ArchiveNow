@@ -50,6 +50,16 @@ namespace ArchiveNow.Configuration
                     creator = (() => new UploadToGoogleDriveAction(googleDriveContext));
                     break;
 
+                case "SendToArchiveNow":
+                    var remoteContext = new RemoteInstanceContext
+                    {
+                        Host = GetValue<string>(parameters, "Host"),
+                        Port = GetValue<int>(parameters, "Port")
+                    };
+
+                    creator = (() => new SendToArchiveNowAction(remoteContext));
+                    break;
+
                 case "SetClipboard":
                     creator = (() => new SetClipboardAction(new ClipboardService()));
                     break;
@@ -81,7 +91,16 @@ namespace ArchiveNow.Configuration
         {
             if (parameters.ContainsKey(key))
             {
-                return (T) parameters[key];
+                var value = parameters[key];
+                if (value == null)
+                {
+                    return default;
+                }
+
+                var targetType = typeof(T);
+                var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+                return (T)Convert.ChangeType(value, underlyingType);
             }
 
             return default;
