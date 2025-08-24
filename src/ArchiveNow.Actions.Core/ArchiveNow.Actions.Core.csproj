@@ -54,6 +54,7 @@
     <Compile Include="AfterFinishedActionProgress.cs" />
     <Compile Include="CompositeAction.cs" />
     <Compile Include="Contexts\MailContext.cs" />
+    <Compile Include="Contexts\SendToArchiveNowContext.cs" />
     <Compile Include="DeleteAction.cs" />
     <Compile Include="EncryptAction.cs" />
     <Compile Include="IAfterFinishedAction.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Result\CompositeAfterFinishedActionResult.cs" />
     <Compile Include="Result\NullAfterFinishedActionResult.cs" />
     <Compile Include="RetryableAfterFinishedActionBase.cs" />
+    <Compile Include="SendToArchiveNowAction.cs" />
     <Compile Include="SendToMailBoxAction.cs" />
     <Compile Include="SetClipboardAction.cs" />
     <Compile Include="TestAction.cs" />
