@@ -4,8 +4,8 @@ namespace ArchiveNow.RemoteUploadHost
 {
     public class RemoteUploadConfig
     {
-        public string Host { get; set; } = string.Empty;
         public int Port { get; set; }
+
         public string UploadsDirectory { get; set; } = string.Empty;
 
         public static RemoteUploadConfig Load(string path)
