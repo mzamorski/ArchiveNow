@@ -108,8 +108,8 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         }
 
         //// 3) Fallback to the remote IP from the connection (Kestrel)
-        //if (string.IsNullOrWhiteSpace(candidate))
-        //    candidate = req.HttpContext.Connection.RemoteIpAddress?.ToString();
+        if (string.IsNullOrWhiteSpace(candidate))
+            candidate = req.RemoteEndPoint.Address.ToString();
 
         // 4) Normalize IP and map loopback to "localhost"
         if (!string.IsNullOrWhiteSpace(candidate) && IPAddress.TryParse(candidate, out var ip))
