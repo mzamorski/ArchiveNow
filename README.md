@@ -7,8 +7,8 @@ A configurable folder archiver supporting profiles. It allows the selection of t
 - SevenZip (Default)
 - SharpZip
 - SystemZip
-- LiteDb
 - LZ4
+- LiteDb
 - Msi
 - Listing
   
