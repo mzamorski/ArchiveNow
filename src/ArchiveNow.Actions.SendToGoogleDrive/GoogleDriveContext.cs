@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ArchiveNow.Actions.UploadToGoogleDrive
+namespace ArchiveNow.Actions.SendToGoogleDrive
 {
     public class GoogleDriveContext
     {

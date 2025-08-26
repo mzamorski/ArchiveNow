@@ -7,8 +7,8 @@
     <ProjectGuid>{A2D88CE7-909F-4DB7-B05B-9AE79A9EAE3F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArchiveNow.Actions.UploadToGoogleDrive</RootNamespace>
-    <AssemblyName>ArchiveNow.Actions.UploadToGoogleDrive</AssemblyName>
+    <RootNamespace>ArchiveNow.Actions.SendToGoogleDrive</RootNamespace>
+    <AssemblyName>ArchiveNow.Actions.SendToGoogleDrive</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GoogleDriveContext.cs" />
-    <Compile Include="UploadToGoogleDriveAction.cs" />
+    <Compile Include="SendToGoogleDriveAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

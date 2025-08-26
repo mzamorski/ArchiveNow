@@ -23,15 +23,15 @@
 	"BreakActionsIfError": "true",
 	"AfterFinishedActions":[  
 		
-		{
-			"Name": "SetClipboard"
-		},
-		{
-			"Name": "UploadToGoogleDrive",
-			"Context": {
-				"SecretKeyFilePath": "GoogleDriveCredentials.json",
-				"DestinationFolderId": "1fICLyjLPBSm3phufBdAnjzKcG29twQ81",
-			}
-		}
+                {
+                        "Name": "SetClipboard"
+                },
+                {
+                        "Name": "SendToGoogleDrive",
+                        "Context": {
+                                "SecretKeyFilePath": "GoogleDriveCredentials.json",
+                                "DestinationFolderId": "1fICLyjLPBSm3phufBdAnjzKcG29twQ81",
+                        }
+                }
     ]
 }

@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Providers.RoboCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Providers.Core", "ArchiveNow.ArchiveProviders.Core\ArchiveNow.Providers.Core.csproj", "{B6974FD5-C1FE-4B06-91B3-C522617AC0D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Actions.UploadToGoogleDrive", "ArchiveNow.Actions.UploadToGoogleDrive\ArchiveNow.Actions.UploadToGoogleDrive.csproj", "{A2D88CE7-909F-4DB7-B05B-9AE79A9EAE3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Actions.SendToGoogleDrive", "ArchiveNow.Actions.SendToGoogleDrive\ArchiveNow.Actions.SendToGoogleDrive.csproj", "{A2D88CE7-909F-4DB7-B05B-9AE79A9EAE3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Actions.Core", "ArchiveNow.Actions.Core\ArchiveNow.Actions.Core.csproj", "{1E0F09A7-92BD-40B2-AA8C-F04016CEBFA5}"
 EndProject

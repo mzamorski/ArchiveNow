@@ -16,7 +16,7 @@ A configurable folder archiver supporting profiles. It allows the selection of t
 
 - SendToMailBox
 - SendToArchiveNow
-- UploadToGoogleDrive
+- SendToGoogleDrive
 - SetClipboard
 - MoveToDirectory
 - Delete

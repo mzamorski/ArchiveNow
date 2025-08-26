@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ArchiveNow.Actions.Core;
 using ArchiveNow.Actions.Core.Contexts;
-using ArchiveNow.Actions.UploadToGoogleDrive;
+using ArchiveNow.Actions.SendToGoogleDrive;
 using ArchiveNow.Utils.Windows;
 
 namespace ArchiveNow.Configuration
@@ -31,9 +31,9 @@ namespace ArchiveNow.Configuration
                     creator = (() => new SendToMailBoxAction(mailContext));
                     break;
 
-                case "UploadToGoogleDrive":
+                case "SendToGoogleDrive":
                     //return NullAction.Instance;
-                    //throw new NotImplementedException("UploadToGoogleDrive");
+                    //throw new NotImplementedException("SendToGoogleDrive");
 
                     var secretKeyFilePath = GetValue<string>(parameters, "SecretKeyFilePath");
                     //if (!Path.IsPathRooted(secretKeyFilePath))
@@ -47,7 +47,7 @@ namespace ArchiveNow.Configuration
                         DestinationFolderId = GetValue<string>(parameters, "DestinationFolderId")
                     };
 
-                    creator = (() => new UploadToGoogleDriveAction(googleDriveContext));
+                    creator = (() => new SendToGoogleDriveAction(googleDriveContext));
                     break;
                 case "SendToArchiveNow":
                     var remoteContext = new SendToArchiveNowContext

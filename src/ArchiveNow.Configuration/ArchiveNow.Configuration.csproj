@@ -80,9 +80,9 @@
       <Project>{1e0f09a7-92bd-40b2-aa8c-f04016cebfa5}</Project>
       <Name>ArchiveNow.Actions.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ArchiveNow.Actions.UploadToGoogleDrive\ArchiveNow.Actions.UploadToGoogleDrive.csproj">
+    <ProjectReference Include="..\ArchiveNow.Actions.SendToGoogleDrive\ArchiveNow.Actions.SendToGoogleDrive.csproj">
       <Project>{a2d88ce7-909f-4db7-b05b-9ae79a9eae3f}</Project>
-      <Name>ArchiveNow.Actions.UploadToGoogleDrive</Name>
+      <Name>ArchiveNow.Actions.SendToGoogleDrive</Name>
     </ProjectReference>
     <ProjectReference Include="..\ArchiveNow.ArchiveProviders.Core\ArchiveNow.Providers.Core.csproj">
       <Project>{B6974FD5-C1FE-4B06-91B3-C522617AC0D7}</Project>
