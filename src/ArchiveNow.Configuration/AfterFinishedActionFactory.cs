@@ -16,7 +16,7 @@ namespace ArchiveNow.Configuration
 
             switch (name)
             {
-                case "SendToMailBox":
+                case "SendToMailbox":
                     var mailContext = new MailContext
                     {
                         Host = GetValue<string>(parameters, "Host"),
@@ -28,7 +28,7 @@ namespace ArchiveNow.Configuration
                         Subject = GetValue<string>(parameters, "Subject")
                     };
 
-                    creator = (() => new SendToMailBoxAction(mailContext));
+                    creator = (() => new SendToMailboxAction(mailContext));
                     break;
 
                 case "SendToGoogleDrive":
