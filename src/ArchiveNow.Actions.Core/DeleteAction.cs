@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using ArchiveNow.Actions.Core.Result;
 using ArchiveNow.Utils;
@@ -23,6 +23,16 @@ namespace ArchiveNow.Actions.Core
                 if (File.Exists(context.InputPath))
                 {
                     File.Delete(context.InputPath);
+
+                    foreach (var path in context.AdditionalPaths)
+                    {
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                    }
+
+                    context.AdditionalPaths.Clear();
                 }
                 else
                 {
@@ -36,7 +46,8 @@ namespace ArchiveNow.Actions.Core
                 message = ex.Message;
             }
 
-            return new AfterFinishedActionResult(hasError.Not(), message);
+            return new AfterFinishedActionResult(hasError.Not(), context.InputPath, message);
         }
     }
 }
+
