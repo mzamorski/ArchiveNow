@@ -69,7 +69,7 @@
     <Compile Include="Result\NullAfterFinishedActionResult.cs" />
     <Compile Include="RetryableAfterFinishedActionBase.cs" />
     <Compile Include="SendToArchiveNowAction.cs" />
-    <Compile Include="SendToMailBoxAction.cs" />
+    <Compile Include="SendToMailboxAction.cs" />
     <Compile Include="SetClipboardAction.cs" />
     <Compile Include="TestAction.cs" />
   </ItemGroup>

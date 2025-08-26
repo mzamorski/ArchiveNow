@@ -24,7 +24,7 @@
 	"AfterFinishedActions":[  
 		
         {
-			"Name": "SendToMailBox",
+                        "Name": "SendToMailbox",
 			"Context": {
 				"Host": "smtp.gmail.com",
 				"Port": 587,

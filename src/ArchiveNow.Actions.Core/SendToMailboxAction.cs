@@ -8,7 +8,7 @@ using ArchiveNow.Utils;
 
 namespace ArchiveNow.Actions.Core
 {
-    public class SendToMailBoxAction : AfterFinishedActionBase
+    public class SendToMailboxAction : AfterFinishedActionBase
     {
         private const string DefaultSubject = "[ArchiveNow]";
         private const string DefaultBody = "The file was automatically sent by ArchiveNow!";
@@ -31,7 +31,7 @@ namespace ArchiveNow.Actions.Core
         /// Optional
         /// </summary>
         /// <param name="mailContext"></param>
-        public SendToMailBoxAction(MailContext mailContext)
+        public SendToMailboxAction(MailContext mailContext)
             : base(precedence: 8)
         {
             _host = mailContext.Host;
