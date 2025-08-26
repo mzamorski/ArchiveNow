@@ -22,3 +22,12 @@ A configurable folder archiver supporting profiles. It allows the selection of t
 - Delete
 - Encrypt
 
+## Available File Name Builders
+
+- Random - generates a random file name
+- AddDateTime - appends the current date and time to the file name
+- LeaveOriginal - keeps the original file name
+- AddVersion - adds a version number stored in preferences
+- Rename(<name>) - renames the file to the provided name
+- Default - same as LeaveOriginal
+
