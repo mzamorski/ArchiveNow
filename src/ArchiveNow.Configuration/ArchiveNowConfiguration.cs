@@ -24,15 +24,20 @@ namespace ArchiveNow.Configuration
 
         public bool HasDefaultProfile => !DefaultProfile.IsEmpty;
 
+        public RemoteUploadHostConfiguration RemoteUploadHost { get; set; } = new RemoteUploadHostConfiguration();
+
         public override string ToString()
         {
             var builder = new StringBuilder();
             builder.AppendLine($"ShowSummary: {ShowSummary}\nDefaultProfile: {DefaultProfile}");
             builder.AppendLine("Maps:");
+
             foreach (var item in DirectoryProfileMap)
             {
                 builder.AppendLine($"[{item.Key}] -> {{{item.Value}}}");
             }
+
+            builder.AppendLine($"RemoteUploadHost: {RemoteUploadHost}");
 
             return builder.ToString();
         }
