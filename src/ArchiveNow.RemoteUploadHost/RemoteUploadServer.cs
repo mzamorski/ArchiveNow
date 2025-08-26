@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace ArchiveNow.RemoteUpload.Server;
 
@@ -93,6 +94,54 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         return safeName;
     }
 
+    static string GetClientFolderName(HttpListenerRequest req)
+    {
+        // 1) Prefer custom header (client-provided machine name)
+        var candidate = req.Headers["X-Client-Host"];
+
+        // 2) If behind a reverse proxy, take the first IP from X-Forwarded-For
+        if (string.IsNullOrWhiteSpace(candidate))
+        {
+            var xff = req.Headers["X-Forwarded-For"];
+            if (!string.IsNullOrWhiteSpace(xff))
+                candidate = xff.Split(',')[0].Trim();
+        }
+
+        //// 3) Fallback to the remote IP from the connection (Kestrel)
+        //if (string.IsNullOrWhiteSpace(candidate))
+        //    candidate = req.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        // 4) Normalize IP and map loopback to "localhost"
+        if (!string.IsNullOrWhiteSpace(candidate) && IPAddress.TryParse(candidate, out var ip))
+        {
+            if (ip.IsIPv4MappedToIPv6)
+                ip = ip.MapToIPv4();
+
+            if (IPAddress.IsLoopback(ip))
+                candidate = "localhost"; // ::1 or 127.0.0.1
+            else
+                candidate = ip.ToString(); // normalized textual representation
+        }
+
+        // 5) Default
+        if (string.IsNullOrWhiteSpace(candidate))
+            candidate = "__UNKNOWN_HOST";
+
+        return SanitizeForDirectory(candidate);
+    }
+
+    static string SanitizeForDirectory(string name)
+    {
+        // Replace characters invalid for file/directory names with underscores
+        var invalid = Path.GetInvalidFileNameChars();
+        var sb = new StringBuilder(name.Length);
+
+        foreach (var ch in name)
+            sb.Append(invalid.Contains(ch) || ch is ':' or '/' or '\\' ? '_' : ch);
+
+        return sb.ToString();
+    }
+
     private async Task HandleContextAsync(HttpListenerContext context, CancellationToken ct)
     {
         try
@@ -100,8 +149,8 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             var req = context.Request;
             var res = context.Response;
 
-            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote}",
-                req.HttpMethod, req.RawUrl, req.RemoteEndPoint);
+            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote} ({RemoteIp} / {A} / {B})",
+                req.HttpMethod, req.RawUrl, req.RemoteEndPoint, req.RemoteEndPoint?.Address?.ToString(), req.UserHostAddress, req.UserHostName);
 
             if (!string.Equals(req.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
             {
@@ -110,13 +159,10 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
                 return;
             }
 
-            var machineName = req.Headers["X-Client-Host"];
-            // Ensure directory name is safe (no invalid chars etc.)
-            var safeMachineName = string.Concat(machineName.Split(Path.GetInvalidFileNameChars()));
-
+            var folder = GetClientFolderName(req);
             var safeName = GetSafeFileName(req);
+            var targetDir = Path.Combine(_config.UploadsDirectory, folder);
 
-            var targetDir = Path.Combine(_config.UploadsDirectory, safeMachineName);
             Directory.CreateDirectory(targetDir);
 
             var filePath = Path.Combine(targetDir, safeName);
