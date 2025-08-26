@@ -4,30 +4,30 @@ A configurable folder archiver supporting profiles. It allows the selection of t
 
 ## Available Archive Providers
 
-- SevenZip (Default)
-- SharpZip
-- SystemZip
-- LZ4
-- LiteDb
-- Msi
-- Listing
+- `SevenZip` (Default)
+- `SharpZip`
+- `SystemZip`
+- `LZ4`
+- `LiteDb`
+- `Msi`
+- `Listing`
   
 ## Available After-Finished Actions
 
-- SendToMailbox
-- SendToArchiveNow
-- SendToGoogleDrive
-- SetClipboard
-- MoveToDirectory
-- Delete
-- Encrypt
+- `SendToMailbox`
+- `SendToArchiveNow`
+- `SendToGoogleDrive`
+- `SetClipboard`
+- `MoveToDirectory`
+- `Delete`
+- `Encrypt`
 
 ## Available File Name Builders
 
-- Random - generates a random file name
-- AddDateTime - appends the current date and time to the file name
-- LeaveOriginal - keeps the original file name
-- AddVersion - adds a version number stored in preferences
-- Rename(<name>) - renames the file to the provided name
-- Default - same as LeaveOriginal
+- `Random` - Generates a random file name.
+- `AddDateTime` - Appends the current date and time to the file name.
+- `LeaveOriginal` - Keeps the original file name.
+- `AddVersion` - Adds a version number stored in preferences.
+- `Rename(<name>)` - Renames the output file name with the value provided in the parameter.
+- `Default` - Equivalent to `LeaveOriginal`.
 
