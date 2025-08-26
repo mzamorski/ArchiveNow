@@ -22,6 +22,8 @@ namespace ArchiveNow.Configuration
 
         public bool ShowSummary { get; set; }
 
+        public string Version { get; set; }
+
         public bool HasDefaultProfile => !DefaultProfile.IsEmpty;
 
         public RemoteUploadHostConfiguration RemoteUploadHost { get; set; } = new RemoteUploadHostConfiguration();
@@ -29,7 +31,7 @@ namespace ArchiveNow.Configuration
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"ShowSummary: {ShowSummary}\nDefaultProfile: {DefaultProfile}");
+            builder.AppendLine($"ShowSummary: {ShowSummary}\nDefaultProfile: {DefaultProfile}\nVersion: {Version}");
             builder.AppendLine("Maps:");
 
             foreach (var item in DirectoryProfileMap)

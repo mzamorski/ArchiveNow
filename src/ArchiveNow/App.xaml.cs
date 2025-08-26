@@ -219,7 +219,22 @@ namespace ArchiveNow
             parser.SetupHelp("?", "help")
                 .Callback(helpText =>
                     {
-                        var message = $"Invalid or missing argument!\n\nExpected options:\n{helpText}";
+                        string version = string.Empty;
+                        try
+                        {
+                            if (File.Exists(_configFilePath))
+                            {
+                                var configurationProvider = new ArchiveNowConfigurationProvider(_configFilePath, _profileRepository);
+                                version = configurationProvider.Read().Version;
+                            }
+                        }
+                        catch
+                        {
+                            // ignore configuration errors when showing help
+                        }
+
+                        var versionInfo = string.IsNullOrWhiteSpace(version) ? string.Empty : $"Version: {version}\n\n";
+                        var message = $"{versionInfo}Invalid or missing argument!\n\nExpected options:\n{helpText}";
 
                         MessageBox.Show(message, ClientName, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
