@@ -1,21 +1,22 @@
-﻿namespace ArchiveNow.RemoteUpload.Server
-{
-    internal class Program
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using ArchiveNow.RemoteUpload.Server;
+
+Host.CreateDefaultBuilder(args)
+    .UseWindowsService()
+    .ConfigureLogging((ctx, logging) =>
     {
-        private static void Main(string[] args)
-        {
-            //var configPath = Path.Combine(AppContext.BaseDirectory, "ArchiveNow.conf");
-            var configuration = new RemoteUploadConfiguration() { Port = 5000, UploadsDirectory = @"uploads" }; 
+        logging.ClearProviders();
+        logging.AddConsole();
+        logging.AddEventLog(o => o.SourceName = "ArchiveNow.RemoteUpload");
+    })
+    .ConfigureServices((ctx, services) =>
+    {
+        services.Configure<RemoteUploadConfiguration>(
+            ctx.Configuration.GetSection("RemoteUpload"));
 
-            using (var host = new RemoteUploadServer(configuration))
-            {
-                host.Start();
-
-                Console.WriteLine("Remote upload host running. Press Enter to stop...");
-                Console.ReadLine();
-
-                host.Stop();
-            }
-        }
-    }
-}
+        services.AddHostedService<RemoteUploadService>();
+    })
+    .Build()
+    .Run();

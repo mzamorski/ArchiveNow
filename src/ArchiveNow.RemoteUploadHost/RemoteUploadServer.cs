@@ -1,103 +1,174 @@
 ﻿using System.Net;
+using System.Collections.Concurrent;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace ArchiveNow.RemoteUpload.Server
+namespace ArchiveNow.RemoteUpload.Server;
+
+public sealed class RemoteUploadService : BackgroundService, IDisposable
 {
-    public class RemoteUploadServer : IDisposable
+    private readonly ILogger<RemoteUploadService> _logger;
+    private readonly RemoteUploadConfiguration _config;
+    private readonly HttpListener _listener = new();
+    private readonly ConcurrentBag<Task> _inFlight = new();
+
+    public RemoteUploadService(
+        IOptions<RemoteUploadConfiguration> options,
+        ILogger<RemoteUploadService> logger)
     {
-        private readonly RemoteUploadConfiguration _config;
-        private readonly HttpListener _listener;
-        private CancellationTokenSource _cts;
+        _logger = logger;
+        _config = options.Value;
 
-        public RemoteUploadServer(RemoteUploadConfiguration config)
+        if (string.IsNullOrWhiteSpace(_config.UploadsDirectory))
         {
-            _config = config;
-
-            var uploadsDirectory = _config.UploadsDirectory;
-
-            if (string.IsNullOrWhiteSpace(uploadsDirectory))
-                throw new ArgumentException("Uploads directory must be provided", nameof(uploadsDirectory));
-
-            Directory.CreateDirectory(uploadsDirectory);
-
-            _listener = new HttpListener();
-            _listener.Prefixes.Add($"http://+:{_config.Port}/");
+            throw new ArgumentException("Uploads directory must be provided", nameof(_config.UploadsDirectory));
         }
 
-        public void Start()
-        {
-            if (_cts != null)
-            {
-                throw new InvalidOperationException("Host already started");
-            }
+        Directory.CreateDirectory(_config.UploadsDirectory);
 
-            _cts = new CancellationTokenSource();
+        // Listen on all interfaces (URL ACL required for the service account)
+        _listener.Prefixes.Add($"http://+:{_config.Port}/");
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("Starting HTTP listener on port {Port}", _config.Port);
+
+        try
+        {
             _listener.Start();
-            Task.Run(() => ListenLoop(_cts.Token));
+        }
+        catch (HttpListenerException ex)
+        {
+            _logger.LogError(ex,
+                "Failed to start HttpListener on port {Port}. If running as a service, you likely need a URLACL for the service account.",
+                _config.Port);
+            throw;
         }
 
-        private async Task ListenLoop(CancellationToken token)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            while (!token.IsCancellationRequested)
+            HttpListenerContext? ctx = null;
+            try
             {
-                HttpListenerContext context;
-                try
-                {
-                    Console.WriteLine("Waiting for connection...");
-                    context = await _listener.GetContextAsync();
-                }
-                catch (HttpListenerException) when (token.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                _ = Task.Run(() => HandleContextAsync(context), token);
+                ctx = await _listener.GetContextAsync().ConfigureAwait(false);
             }
+            catch (HttpListenerException) when (!_listener.IsListening || stoppingToken.IsCancellationRequested)
+            {
+                break; // stopped by StopAsync()
+            }
+            catch (ObjectDisposedException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Accept failed");
+                continue;
+            }
+
+            var task = HandleContextAsync(ctx, stoppingToken);
+
+            _inFlight.Add(task);
+
+            _ = task.ContinueWith(_ => { }, TaskScheduler.Default);
         }
 
-        private async Task HandleContextAsync(HttpListenerContext context)
-        {
-            Console.WriteLine($"Connection handle: {context.Request}");
+        _logger.LogInformation("Listener loop exiting");
+    }
 
-            if (context.Request.HttpMethod != "POST")
+    private static string GetSafeFileName(HttpListenerRequest req)
+    {
+        var fileName = req.Headers["X-FileName"];
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            fileName = $"upload_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        }
+
+        // Replace invalid Windows characters with underscores
+        var safeName = string.Join("_",
+            fileName.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
+
+        return safeName;
+    }
+
+    private async Task HandleContextAsync(HttpListenerContext context, CancellationToken ct)
+    {
+        try
+        {
+            var req = context.Request;
+            var res = context.Response;
+
+            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote}",
+                req.HttpMethod, req.RawUrl, req.RemoteEndPoint);
+
+            if (!string.Equals(req.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
             {
-                context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
-                context.Response.Close();
+                res.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
+                res.Close();
                 return;
             }
 
-            var fileName = context.Request.Headers["X-FileName"] ?? $"upload_{DateTime.UtcNow.Ticks}";
-            var filePath = Path.Combine(_config.UploadsDirectory, fileName);
+            var safeName = GetSafeFileName(req);
+            var filePath = Path.Combine(_config.UploadsDirectory, safeName);
 
-            Console.WriteLine($"Sending {fileName}...");
+            _logger.LogInformation("Saving upload to {FilePath}", filePath);
 
             using (var fs = File.Create(filePath))
             {
-                await context.Request.InputStream.CopyToAsync(fs);
+                await req.InputStream.CopyToAsync(fs, 81920, ct);
             }
 
-            context.Response.StatusCode = (int)HttpStatusCode.OK;
-            context.Response.Close();
+            res.StatusCode = (int)HttpStatusCode.OK;
+            res.Close();
 
-            Console.WriteLine("Done.");
+            _logger.LogInformation("Upload done: {FilePath}", filePath);
         }
-
-        public void Stop()
+        catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException)
         {
-            if (_cts == null)
+            _logger.LogDebug(ex, "Request aborted due to shutdown");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while handling request");
+
+            try
             {
-                return;
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.Close();
             }
-
-            _cts.Cancel();
-            _listener.Stop();
-            _cts.Dispose();
-        }
-
-        public void Dispose()
-        {
-            Stop();
-            _listener.Close();
+            catch { /* ignore */ }
         }
     }
-}
 
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Stopping service…");
+
+        // Stop Accept() and block new connections
+        if (_listener.IsListening)
+            _listener.Stop();
+
+        // Wait for in-flight requests to complete
+        var toWait = _inFlight.Where(t => !t.IsCompleted).ToArray();
+        if (toWait.Length > 0)
+        {
+            _logger.LogInformation("Waiting for {Count} in-flight requests…", toWait.Length);
+            await Task.WhenAll(toWait);
+        }
+
+        _listener.Close();
+        await base.StopAsync(cancellationToken);
+
+        _logger.LogInformation("Service stopped");
+    }
+
+    public new void Dispose()
+    {
+        if (_listener.IsListening)
+            _listener.Stop();
+        _listener.Close();
+        base.Dispose();
+    }
+}
