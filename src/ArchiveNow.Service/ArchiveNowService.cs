@@ -187,12 +187,14 @@ namespace ArchiveNow.Service
                     var progress = new Progress<AfterFinishedActionProgress>();
                     progress.ProgressChanged += ProgressOnProgressChanged;
 
+                    var additionalPaths = new List<string>();
+
                     foreach (var action in actions)
                     {
                         OnActionExecuting(action);
 
                         action.Progress = progress;
-                        var actionResult = action.Execute(new AfterFinishedActionContext(inputPath));
+                        var actionResult = action.Execute(new AfterFinishedActionContext(inputPath, additionalPaths));
 
                         OnActionExecuted(action, actionResult);
 

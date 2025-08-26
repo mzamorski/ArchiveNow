@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ArchiveNow.Actions.Core.Result;
 using ArchiveNow.Utils;
 using ArchiveNow.Utils.Security;
@@ -28,6 +28,7 @@ namespace ArchiveNow.Actions.Core
             try
             {
                 outputPath = _service.EncryptFile(context.InputPath, _publicKeyFilePath);
+                context.AdditionalPaths.Add(context.InputPath);
             }
             catch (Exception ex)
             {
@@ -39,3 +40,4 @@ namespace ArchiveNow.Actions.Core
         }
     }
 }
+
