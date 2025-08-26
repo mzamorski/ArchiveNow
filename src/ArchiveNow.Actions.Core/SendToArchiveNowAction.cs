@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Windows;
 using ArchiveNow.Actions.Core.Contexts;
 using ArchiveNow.Actions.Core.Result;
 
@@ -18,7 +19,7 @@ namespace ArchiveNow.Actions.Core
         private readonly string _host;
         private readonly int _port;
 
-        public override string Description => "Sending archive to remote ArchiveNow instance...";
+        public override string Description => "Sending to remote instance...";
 
         public SendToArchiveNowAction(SendToArchiveNowContext context)
             : base(precedence: 7)
@@ -54,6 +55,8 @@ namespace ArchiveNow.Actions.Core
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.ToString());
+
                 hasError = true;
                 message = ex.Message;
             }

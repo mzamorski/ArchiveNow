@@ -1,14 +1,14 @@
 ﻿using System.Net;
 
-namespace ArchiveNow.RemoteUploadHost
+namespace ArchiveNow.RemoteUpload.Server
 {
-    public class RemoteUploadHostListener : IDisposable
+    public class RemoteUploadServer : IDisposable
     {
-        private readonly RemoteUploadConfig _config;
+        private readonly RemoteUploadConfiguration _config;
         private readonly HttpListener _listener;
         private CancellationTokenSource _cts;
 
-        public RemoteUploadHostListener(RemoteUploadConfig config)
+        public RemoteUploadServer(RemoteUploadConfiguration config)
         {
             _config = config;
 
@@ -42,6 +42,7 @@ namespace ArchiveNow.RemoteUploadHost
                 HttpListenerContext context;
                 try
                 {
+                    Console.WriteLine("Waiting for connection...");
                     context = await _listener.GetContextAsync();
                 }
                 catch (HttpListenerException) when (token.IsCancellationRequested)
@@ -55,6 +56,8 @@ namespace ArchiveNow.RemoteUploadHost
 
         private async Task HandleContextAsync(HttpListenerContext context)
         {
+            Console.WriteLine($"Connection handle: {context.Request}");
+
             if (context.Request.HttpMethod != "POST")
             {
                 context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
@@ -65,6 +68,8 @@ namespace ArchiveNow.RemoteUploadHost
             var fileName = context.Request.Headers["X-FileName"] ?? $"upload_{DateTime.UtcNow.Ticks}";
             var filePath = Path.Combine(_config.UploadsDirectory, fileName);
 
+            Console.WriteLine($"Sending {fileName}...");
+
             using (var fs = File.Create(filePath))
             {
                 await context.Request.InputStream.CopyToAsync(fs);
@@ -72,6 +77,8 @@ namespace ArchiveNow.RemoteUploadHost
 
             context.Response.StatusCode = (int)HttpStatusCode.OK;
             context.Response.Close();
+
+            Console.WriteLine("Done.");
         }
 
         public void Stop()

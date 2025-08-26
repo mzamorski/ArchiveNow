@@ -1,25 +1,25 @@
 ﻿using System.Text.Json;
 
-namespace ArchiveNow.RemoteUploadHost
+namespace ArchiveNow.RemoteUpload.Server
 {
-    public class RemoteUploadConfig
+    public class RemoteUploadConfiguration
     {
         public int Port { get; set; }
 
         public string UploadsDirectory { get; set; } = string.Empty;
 
-        public static RemoteUploadConfig Load(string path)
+        public static RemoteUploadConfiguration Load(string path)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException($"Configuration file '{path}' was not found.");
 
             var json = File.ReadAllText(path);
-            var config = JsonSerializer.Deserialize<RemoteUploadConfig>(json) ?? new RemoteUploadConfig();
+            var config = JsonSerializer.Deserialize<RemoteUploadConfiguration>(json) ?? new RemoteUploadConfiguration();
             Validate(config);
             return config;
         }
 
-        private static void Validate(RemoteUploadConfig config)
+        private static void Validate(RemoteUploadConfiguration config)
         {
             //if (string.IsNullOrWhiteSpace(config.Host))
             //    throw new InvalidOperationException("Host is not configured.");

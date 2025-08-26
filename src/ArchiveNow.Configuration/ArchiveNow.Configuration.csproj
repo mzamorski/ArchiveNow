@@ -73,6 +73,7 @@
     <Compile Include="Readers\JsonResolvers\PropertyFilterSerializerContractResolver.cs" />
     <Compile Include="Readers\JsonResolvers\WritablePropertiesOnlyResolver.cs" />
     <Compile Include="Readers\SystemRegistryConfigurationProvider.cs" />
+    <Compile Include="RemoteUploadHostConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArchiveNow.Actions.Core\ArchiveNow.Actions.Core.csproj">
