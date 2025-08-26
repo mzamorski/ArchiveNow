@@ -110,8 +110,16 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
                 return;
             }
 
+            var machineName = req.Headers["X-Client-Host"];
+            // Ensure directory name is safe (no invalid chars etc.)
+            var safeMachineName = string.Concat(machineName.Split(Path.GetInvalidFileNameChars()));
+
             var safeName = GetSafeFileName(req);
-            var filePath = Path.Combine(_config.UploadsDirectory, safeName);
+
+            var targetDir = Path.Combine(_config.UploadsDirectory, safeMachineName);
+            Directory.CreateDirectory(targetDir);
+
+            var filePath = Path.Combine(targetDir, safeName);
 
             _logger.LogInformation("Saving upload to {FilePath}", filePath);
 
