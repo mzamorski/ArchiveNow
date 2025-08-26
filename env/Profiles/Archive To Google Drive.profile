@@ -18,17 +18,17 @@
     "Password":null,
     "IsPasswordEncrypted":false,
     "ProviderName":"SharpZip",
-	"UseDefaultActionPrecedence": "true",
-	"AfterFinishedActions":[  
-		{
-			"Name": "UploadToGoogleDrive",
-			"Context": {
-				"SecretKeyFilePath": "GoogleDriveCredentials.json",
-				"DestinationFolderId": "1fICLyjLPBSm3phufBdAnjzKcG29twQ81",
-			}
-		},
-		{
-			"Name": "SetClipboard",
-		}
+        "UseDefaultActionPrecedence": "true",
+        "AfterFinishedActions":[
+                {
+                        "Name": "SendToGoogleDrive",
+                        "Context": {
+                                "SecretKeyFilePath": "GoogleDriveCredentials.json",
+                                "DestinationFolderId": "1fICLyjLPBSm3phufBdAnjzKcG29twQ81",
+                        }
+                },
+                {
+                        "Name": "SetClipboard",
+                }
     ]
 }

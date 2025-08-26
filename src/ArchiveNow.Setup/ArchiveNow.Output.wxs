@@ -18,7 +18,7 @@
                 <File Id="fil154B756001E922A454B851D6A3DB676A" KeyPath="yes" Source="$(var.ArchiveNow.TargetDir)\ArchiveNow.Actions.Core.dll" />
             </Component>
             <Component Id="cmp7FD82BC0B3C15918D3411078013A61DF" Guid="{AEA9DCC6-B7B7-4E43-9D8D-E6AAADE2FBCA}">
-                <File Id="fil65CE7F81BA304B4FB0D17F41C0E86A09" KeyPath="yes" Source="$(var.ArchiveNow.TargetDir)\ArchiveNow.Actions.UploadToGoogleDrive.dll" />
+                <File Id="fil65CE7F81BA304B4FB0D17F41C0E86A09" KeyPath="yes" Source="$(var.ArchiveNow.TargetDir)\ArchiveNow.Actions.SendToGoogleDrive.dll" />
             </Component>
             <Component Id="cmp4C07D33A2EEA0B597BADFD08BAB9E682" Guid="{7B2EF73D-2F1D-41D4-AF0D-93FCC808EF03}">
                 <File Id="fil842339E12518327ED7F7A65FED6D2427" KeyPath="yes" Source="$(var.ArchiveNow.TargetDir)\ArchiveNow.conf" />

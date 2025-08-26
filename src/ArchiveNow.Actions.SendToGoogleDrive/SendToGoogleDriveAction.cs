@@ -14,9 +14,9 @@ using Google.Apis.Util.Store;
 using File = Google.Apis.Drive.v3.Data.File;
 
 
-namespace ArchiveNow.Actions.UploadToGoogleDrive
+namespace ArchiveNow.Actions.SendToGoogleDrive
 {
-    public class UploadToGoogleDriveAction : AfterFinishedActionBase
+    public class SendToGoogleDriveAction : AfterFinishedActionBase
     {
         private const string ContentMimeType = "application/unknown";
 
@@ -26,7 +26,7 @@ namespace ArchiveNow.Actions.UploadToGoogleDrive
 
         private long ContentLength { get; set; }
 
-        public UploadToGoogleDriveAction(GoogleDriveContext context)
+        public SendToGoogleDriveAction(GoogleDriveContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _context.Validate();
