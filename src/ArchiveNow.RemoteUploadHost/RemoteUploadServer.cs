@@ -1,9 +1,9 @@
 ﻿using System.Net;
+using System.Text;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text;
 
 namespace ArchiveNow.RemoteUpload.Server;
 
@@ -144,13 +144,15 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
 
     private async Task HandleContextAsync(HttpListenerContext context, CancellationToken ct)
     {
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
         try
         {
             var req = context.Request;
             var res = context.Response;
 
-            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote} ({RemoteIp} / {A} / {B})",
-                req.HttpMethod, req.RawUrl, req.RemoteEndPoint, req.RemoteEndPoint?.Address?.ToString(), req.UserHostAddress, req.UserHostName);
+            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote}",
+                req.HttpMethod, req.RawUrl, req.RemoteEndPoint);
 
             if (!string.Equals(req.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
             {
