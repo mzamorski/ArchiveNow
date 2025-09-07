@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ArchiveNow.WinUtils;
+using System.Data;
 
 namespace ArchiveNow.RemoteUpload.Server;
 
@@ -182,7 +183,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
 
             _logger.LogInformation("Upload done: {FilePath}", filePath);
 
-            Notify(folder, safeName, filePath);
+            Notify(folder, new FileInfo(filePath));
         }
         catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException)
         {
@@ -248,28 +249,28 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         return $"{b:0.##} {u[i]}";
     }
 
-    private void Notify(string client, string fileName, string filePath)
+    private void Notify(string client, FileInfo file)
     {
         try
         {
-            var exe = Path.Combine(AppContext.BaseDirectory, "ArchiveNow.Notifier.exe");
-            if (!File.Exists(exe))
+            const string notifierApp = "ArchiveNow.Notifier.exe";
+
+            var path = Path.Combine(AppContext.BaseDirectory, notifierApp);
+            if (!File.Exists(path))
             {
-                _logger.LogWarning("Notifier.exe not found at {Path}", exe);
+                _logger.LogWarning("{notifierApp} not found at {path}", notifierApp, path);
                 return;
             }
 
-            var size = new FileInfo(filePath).Length;
-            var title = "Server";
-            var body = BuildUploadBody(client, fileName, size);
-
+            const string title = "Server";
+            var size = file.Length;
+            
             var argsLine =
                 $"--title \"{title}\" " +
-                $"--message \"{EscapeForCli(body)}\" ";
+                $"--message \"File <{file.Name}> from host <{client}>\" ";
 
-            bool ok = InteractiveProcessLauncher.LaunchInActiveSession(exe, argsLine);
-
-            if (!ok)
+            bool success = InteractiveProcessLauncher.LaunchInActiveSession(path, argsLine);
+            if (!success)
             {
                 _logger.LogWarning("Failed to launch Notifier.exe in user session.");
             }
@@ -278,10 +279,5 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         {
             _logger.LogError(ex, "Exception while trying to launch Notifier.exe");
         }
-    }
-
-    private static string EscapeForCli(string s)
-    {
-        return s.Replace("\"", "\\\"").Replace("\r", "").Replace("\n", "\\n");
     }
 }

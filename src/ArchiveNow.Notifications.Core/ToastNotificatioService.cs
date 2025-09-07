@@ -23,18 +23,19 @@ namespace ArchiveNow.Notifications.Core
 
         public void Show(NotificationMessage msg)
         {
-            //var iconFilePath = Path.Combine(AppContext.BaseDirectory, "an-main.ico");
-
             var builder = new ToastContentBuilder()
                 //.AddAppLogoOverride(new Uri(iconFilePath))
                 .AddText(msg.Title)
-                .AddText(msg.Body);
+                .AddText(msg.Body)
+                .SetToastScenario(ToastScenario.Alarm);
 
             if (!string.IsNullOrEmpty(msg.LaunchArgs))
+            {
                 builder.AddArgument("launch", msg.LaunchArgs);
+            }
 
             var notif = new ToastNotification(builder.GetToastContent().GetXml());
-
+    
             if (!string.IsNullOrEmpty(msg.Tag)) notif.Tag = msg.Tag;
             if (!string.IsNullOrEmpty(msg.Group)) notif.Group = msg.Group;
 
