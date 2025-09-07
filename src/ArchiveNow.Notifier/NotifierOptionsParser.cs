@@ -19,22 +19,22 @@ namespace ArchiveNow.Notifier
                 .Required()
                 .WithDescription("Main text of the toast notification");
 
-            p.Setup(o => o.Client)
-                .As("client")
-                .WithDescription("Client name or host");
+            //p.Setup(o => o.Client)
+            //    .As("client")
+            //    .WithDescription("Client name or host");
 
-            p.Setup(o => o.FileName)
-                .As("file")
-                .WithDescription("File name");
+            //p.Setup(o => o.FileName)
+            //    .As("file")
+            //    .WithDescription("File name");
 
-            p.Setup<long>(o => o.Size)
-                .As("size")
-                .SetDefault(0)
-                .WithDescription("File size in bytes");
+            //p.Setup<long>(o => o.Size)
+            //    .As("size")
+            //    .SetDefault(0)
+            //    .WithDescription("File size in bytes");
 
-            p.Setup(o => o.Icon)
-                .As("icon")
-                .WithDescription("Path to an icon file for the toast");
+            //p.Setup(o => o.Icon)
+            //    .As("icon")
+            //    .WithDescription("Path to an icon file for the toast");
 
             var result = p.Parse(args);
             if (result.HasErrors)

@@ -231,6 +231,23 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         base.Dispose();
     }
 
+    private static string BuildUploadBody(string client, string fileName, long sizeBytes)
+    {
+        return
+            "File received" + "\n" +
+            $"• Host: {client}" + "\n" +
+            $"• File: {fileName}" + "\n" +
+            $"• Size: {FormatSize(sizeBytes)}";
+    }
+
+    private static string FormatSize(long bytes)
+    {
+        string[] u = { "B", "KB", "MB", "GB", "TB" };
+        double b = bytes; int i = 0;
+        while (b >= 1024 && i < u.Length - 1) { b /= 1024; i++; }
+        return $"{b:0.##} {u[i]}";
+    }
+
     private void Notify(string client, string fileName, string filePath)
     {
         try
@@ -242,16 +259,13 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
                 return;
             }
 
-            var icon = Path.Combine(AppContext.BaseDirectory, "icon.ico");
             var size = new FileInfo(filePath).Length;
+            var title = "Server";
+            var body = BuildUploadBody(client, fileName, size);
 
             var argsLine =
-                $"--title \"Remote upload\" " +
-                $"--message \"New file received\" " +
-                $"--client \"{client}\" " +
-                $"--file \"{fileName}\" " +
-                $"--size {size} " +
-                $"--icon \"{icon}\"";
+                $"--title \"{title}\" " +
+                $"--message \"{EscapeForCli(body)}\" ";
 
             bool ok = InteractiveProcessLauncher.LaunchInActiveSession(exe, argsLine);
 
@@ -264,5 +278,10 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         {
             _logger.LogError(ex, "Exception while trying to launch Notifier.exe");
         }
+    }
+
+    private static string EscapeForCli(string s)
+    {
+        return s.Replace("\"", "\\\"").Replace("\r", "").Replace("\n", "\\n");
     }
 }
