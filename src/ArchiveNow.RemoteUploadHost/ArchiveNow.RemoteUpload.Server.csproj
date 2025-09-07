@@ -23,5 +23,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\ArchiveNow.WinUtils\ArchiveNow.WinUtils.csproj" />
+  </ItemGroup>
 
 </Project>

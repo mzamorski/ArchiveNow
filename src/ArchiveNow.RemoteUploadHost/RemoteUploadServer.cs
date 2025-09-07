@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ArchiveNow.WinUtils;
 
 namespace ArchiveNow.RemoteUpload.Server;
 
@@ -180,6 +181,8 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             res.Close();
 
             _logger.LogInformation("Upload done: {FilePath}", filePath);
+
+            Notify(folder, safeName, filePath);
         }
         catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException)
         {
@@ -226,5 +229,40 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             _listener.Stop();
         _listener.Close();
         base.Dispose();
+    }
+
+    private void Notify(string client, string fileName, string filePath)
+    {
+        try
+        {
+            var exe = Path.Combine(AppContext.BaseDirectory, "ArchiveNow.Notifier.exe");
+            if (!File.Exists(exe))
+            {
+                _logger.LogWarning("Notifier.exe not found at {Path}", exe);
+                return;
+            }
+
+            var icon = Path.Combine(AppContext.BaseDirectory, "icon.ico");
+            var size = new FileInfo(filePath).Length;
+
+            var argsLine =
+                $"--title \"Remote upload\" " +
+                $"--message \"New file received\" " +
+                $"--client \"{client}\" " +
+                $"--file \"{fileName}\" " +
+                $"--size {size} " +
+                $"--icon \"{icon}\"";
+
+            bool ok = InteractiveProcessLauncher.LaunchInActiveSession(exe, argsLine);
+
+            if (!ok)
+            {
+                _logger.LogWarning("Failed to launch Notifier.exe in user session.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception while trying to launch Notifier.exe");
+        }
     }
 }
