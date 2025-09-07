@@ -223,6 +223,10 @@
       <Project>{7076BF8A-260A-4972-9694-7E6A9B61CD61}</Project>
       <Name>ArchiveNow.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ArchiveNow.Notifications.Core\ArchiveNow.Notifications.Core.csproj">
+      <Project>{b611831b-d5a6-46a2-9ceb-b0dd70bc812a}</Project>
+      <Name>ArchiveNow.Notifications.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ArchiveNow.Service\ArchiveNow.Service.csproj">
       <Project>{2A73F9EC-ECD6-4763-B944-3A36B6503E24}</Project>
       <Name>ArchiveNow.Service</Name>
