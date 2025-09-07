@@ -31,7 +31,6 @@ Host.CreateDefaultBuilder(args)
         .ToList();
 
         string? picked = candidates.FirstOrDefault(File.Exists);
-
         if (picked is null)
         {
             // Optional: fail fast to uniknąć cichego startu bez konfiguracji
@@ -62,22 +61,40 @@ Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((ctx, services) =>
     {
-        // Flexible binding:
-        // If config has "RemoteUpload" section -> bind from that section,
-        // else bind from root.
-        IConfiguration config = ctx.Configuration;
-        var section = config.GetSection("RemoteUploadServer");
-
-        if (section.Exists())
-        {
-            services.Configure<RemoteUploadConfiguration>(section);
-        }
-        else
-        {
-            services.Configure<RemoteUploadConfiguration>(config);
-        }
-
+        services.AddOptions();
         services.AddHostedService<RemoteUploadService>();
+        services.AddRemoteUploadConfigWithEnvExpansion();
     })
     .Build()
     .Run();
+
+public static class RemoteUploadConfigurationExtensions
+{
+    public static IServiceCollection AddRemoteUploadConfigWithEnvExpansion(this IServiceCollection services)
+    {
+        services.AddOptions<RemoteUploadConfiguration>()
+            .Configure<IConfiguration>((opts, cfg) =>
+            {
+                var section = cfg.GetSection("RemoteUploadServer");
+                if (section.Exists())
+                {
+                    section.Bind(opts);
+                }
+                else
+                {
+                    cfg.Bind(opts);
+                }
+            })
+            .PostConfigure(options =>
+            {
+                // Expand env vars just for the needed fields
+                if (!string.IsNullOrEmpty(options.UploadsDirectory))
+                {
+                    options.UploadsDirectory =
+                        Environment.ExpandEnvironmentVariables(options.UploadsDirectory);
+                }
+            });
+
+        return services;
+    }
+}
