@@ -5,7 +5,7 @@ namespace ArchiveNow.Notifier
 {
     internal class Program
     {
-        private const string AppId = "ArchiveNow.Notifier";  // AUMID
+        private const string AppId = "ArchiveNow";  // AUMID
         private const string ShortcutName = "ArchiveNow Notifier";
 
         [STAThread]
