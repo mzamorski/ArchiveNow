@@ -11,12 +11,6 @@ namespace ArchiveNow.Utils.Windows
 
         private static readonly object ThreadSyncObject = new object();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="numberOfTries"></param>
-        /// <returns></returns>
         [STAThread]
         public static bool TrySetClipboard(string text, int numberOfTries = DefaultNumberOfTries)
         {

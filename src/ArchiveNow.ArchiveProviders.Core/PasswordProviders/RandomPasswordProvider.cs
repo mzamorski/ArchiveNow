@@ -1,7 +1,6 @@
-﻿using System.Security;
-using System.Web.Security;
-
-using ArchiveNow.Utils;
+﻿using ArchiveNow.Utils;
+using ArchiveNow.Utils.Security;
+using System.Security;
 
 namespace ArchiveNow.Providers.Core.PasswordProviders
 {
@@ -24,7 +23,7 @@ namespace ArchiveNow.Providers.Core.PasswordProviders
                 this.Length = length.Value;
             }
 
-            var password = Membership.GeneratePassword(this.Length, 0);
+            var password = PasswordHelper.GeneratePassword(this.Length, 0);
 
             this.Password = password.ConvertToSecureString();
             this.Password.MakeReadOnly();

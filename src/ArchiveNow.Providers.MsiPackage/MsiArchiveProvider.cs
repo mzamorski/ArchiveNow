@@ -48,7 +48,6 @@ namespace ArchiveNow.Providers.MsiPackage
                 GUID = Guid.NewGuid(),
                 UI = WUI.WixUI_InstallDir,
                 Language = CultureInfo.CurrentCulture.Name,
-                InstallPrivileges = InstallPrivileges.limited,
                 ControlPanelInfo = new ProductInfo { Manufacturer = AppName },
                 OutFileName = archiveFileName,
                 OutDir = outputDirectory,

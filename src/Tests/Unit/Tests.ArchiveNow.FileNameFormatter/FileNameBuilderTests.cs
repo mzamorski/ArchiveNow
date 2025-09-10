@@ -1,6 +1,7 @@
-﻿using System;
-using ArchiveNow.Providers.Core.FileNameBuilders;
+﻿using ArchiveNow.Providers.Core.FileNameBuilders;
 using NUnit.Framework;
+using System;
+using WixToolset.Mba.Core;
 
 namespace Tests.ArchiveNow.FileNameBuilder
 {
@@ -13,7 +14,7 @@ namespace Tests.ArchiveNow.FileNameBuilder
             var builder = new RandomFileNameBuilder();
             var fileName = builder.Build();
 
-            Assert.IsFalse(string.IsNullOrWhiteSpace(fileName));
+            Assert.That(string.IsNullOrWhiteSpace(fileName), Is.False);
         }
 
         [Test]
@@ -27,7 +28,7 @@ namespace Tests.ArchiveNow.FileNameBuilder
 
             var formattedFileName = builder.Build(ctx);
 
-            Assert.AreEqual("Test_20160102-1230", formattedFileName);
+            Assert.That("Test_20160102-1230", Is.EqualTo(formattedFileName));
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace Tests.ArchiveNow.FileNameBuilder
 
             var formattedFileName = builder.Build(ctx);
 
-            Assert.AreEqual("MyProject", formattedFileName);
+            Assert.That("MyProject-1230", Is.EqualTo(formattedFileName));
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace Tests.ArchiveNow.FileNameBuilder
 
             var formattedFileName = builder.Build(ctx);
 
-            Assert.AreEqual("MyProject_20160102-1230", formattedFileName);
+            Assert.That("MyProject_20160102-1230", Is.EqualTo(formattedFileName));
         }
 
         /*

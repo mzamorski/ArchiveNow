@@ -13,7 +13,7 @@ namespace Tests.ArchiveNow.CommandLineBuilder
             builder.AddPaths(new[] { @"home\foo", @"home\bar", @"home\baz" });
 
             var commandLine = builder.ToString();
-            Assert.AreEqual("--paths \"home\\foo\" \"home\\bar\" \"home\\baz\"", commandLine);
+            Assert.That("--paths \"home\\foo\" \"home\\bar\" \"home\\baz\"", Is.EqualTo(commandLine));
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace Tests.ArchiveNow.CommandLineBuilder
             builder.AddPaths(new[] { @"home\baz" });
 
             var commandLine = builder.ToString();
-            Assert.AreEqual("--paths \"home\\foo\" \"home\\bar\" \"home\\baz\"", commandLine);
+            Assert.That("--paths \"home\\foo\" \"home\\bar\" \"home\\baz\"", Is.EqualTo(commandLine));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Tests.ArchiveNow.CommandLineBuilder
             builder.SetProfileName("Test.profile");
 
             var commandLine = builder.ToString();
-            Assert.AreEqual("--paths \"home\\foo\" \"home\\bar\" \"home\\baz\"", commandLine);
+            Assert.That("--paths \"home\\foo\" \"home\\bar\" \"home\\baz\"", Is.EqualTo(commandLine));
         }
     }
 }

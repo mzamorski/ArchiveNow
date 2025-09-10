@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Windows;
+
 using ArchiveNow.Actions.Core.Contexts;
 using ArchiveNow.Actions.Core.Result;
 
@@ -56,8 +56,6 @@ namespace ArchiveNow.Actions.Core
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
-
                 hasError = true;
                 message = ex.Message;
             }
