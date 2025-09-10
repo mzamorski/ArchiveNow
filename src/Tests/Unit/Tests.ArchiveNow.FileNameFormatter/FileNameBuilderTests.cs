@@ -1,7 +1,6 @@
-﻿using ArchiveNow.Providers.Core.FileNameBuilders;
+﻿using System;
+using ArchiveNow.Providers.Core.FileNameBuilders;
 using NUnit.Framework;
-using System;
-using WixToolset.Mba.Core;
 
 namespace Tests.ArchiveNow.FileNameBuilder
 {
@@ -61,22 +60,5 @@ namespace Tests.ArchiveNow.FileNameBuilder
 
             Assert.That("MyProject_20160102-1230", Is.EqualTo(formattedFileName));
         }
-
-        /*
-        [Test]
-        public void Foo()
-        {
-            string directoryPath = "C:\\MyProject\\trunk";
-
-            var store = new PreferencesStore("AddVersion");
-            var builder = new AddVersionFileNameBuilder(store);
-
-            IFileNameBuilderContext ctx = new FileNameBuilderContext(directoryPath);
-
-            var formattedFileName = builder.Build(ctx);
-
-            Assert.AreEqual("trunk-1", formattedFileName);
-        }
-        */
     }
 }

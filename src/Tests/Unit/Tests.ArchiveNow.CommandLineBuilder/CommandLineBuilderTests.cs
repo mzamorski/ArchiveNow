@@ -1,5 +1,4 @@
-﻿
-using ArchiveNow.Shell.CommandLineBuilder;
+﻿using ArchiveNow.Shell.CommandLineBuilder;
 using NUnit.Framework;
 
 namespace Tests.ArchiveNow.CommandLineBuilder

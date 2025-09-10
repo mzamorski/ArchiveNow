@@ -1,7 +1,5 @@
-﻿using System;
-using ArchiveNow.Utils.IO;
+﻿using ArchiveNow.Utils.IO;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace Tests.ArchiveNow.Utils
 {
@@ -10,15 +8,14 @@ namespace Tests.ArchiveNow.Utils
     {
         [SetUp]
         public void Setup()
-        {
+        { }
 
-        }
-
-        [TestCase("C:\\foo\\bar", "bar")]
-        [TestCase("C:\\foo\\bar.txt", "bar")]
-        public void Build_RandomFileName(string path, string expected)
+        [TestCase("C:\\foo\\bar", "bar", "")]
+        [TestCase("C:\\foo\\bar.txt", "bar", "txt")]
+        public void Build_RandomFileName(string path, string name, string extension)
         {
-            //Assert.AreEqual(expected, path.GetName());
+            Assert.That(name, Is.EqualTo(path.GetName(out var ext)));
+            Assert.That(ext, Is.EqualTo(extension));
         }
     }
 }
