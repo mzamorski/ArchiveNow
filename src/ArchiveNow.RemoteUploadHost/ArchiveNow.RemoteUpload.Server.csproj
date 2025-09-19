@@ -25,6 +25,7 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\ArchiveNow.Security\ArchiveNow.Security.csproj" />
     <ProjectReference Include="..\ArchiveNow.WinUtils\ArchiveNow.WinUtils.csproj" />
   </ItemGroup>
 

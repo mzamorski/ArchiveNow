@@ -42,6 +42,10 @@
     <None Update="ArchiveNow.conf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <AppDesigner Include="Properties\" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="FluentCommandLineParser" Version="1.4.3" />
@@ -77,5 +81,12 @@
     <ProjectReference Include="..\ArchiveNow.Notifications.Core\ArchiveNow.Notifications.Core.csproj" />
     <ProjectReference Include="..\ArchiveNow.Service\ArchiveNow.Service.csproj" />
     <ProjectReference Include="..\ArchiveNow.Utils\ArchiveNow.Utils.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

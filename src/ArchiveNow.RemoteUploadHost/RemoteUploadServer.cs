@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ArchiveNow.WinUtils;
 using System.Data;
+using ArchiveNow.Security;
 
 namespace ArchiveNow.RemoteUpload.Server;
 
@@ -15,13 +16,17 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
     private readonly RemoteUploadConfiguration _config;
     private readonly HttpListener _listener = new();
     private readonly ConcurrentBag<Task> _inFlight = new();
+    private readonly IHttpFileNameEncoder _fileNameEncoder;
 
     public RemoteUploadService(
         IOptions<RemoteUploadConfiguration> options,
-        ILogger<RemoteUploadService> logger)
+        ILogger<RemoteUploadService> logger
+        //, IHttpFileNameEncoder fileNameEncoder
+        )
     {
         _logger = logger;
         _config = options.Value;
+        _fileNameEncoder = new PlainHttpFileNameEncoder();
 
         if (string.IsNullOrWhiteSpace(_config.UploadsDirectory))
         {
@@ -81,9 +86,10 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         _logger.LogInformation("Listener loop exiting");
     }
 
-    private static string GetSafeFileName(HttpListenerRequest req)
+    private string GetSafeFileName(HttpListenerRequest req)
     {
-        var fileName = req.Headers["X-FileName"];
+        var fileName = _fileNameEncoder.Decode(req);
+
         if (string.IsNullOrWhiteSpace(fileName))
         {
             fileName = $"upload_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
@@ -94,6 +100,14 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             fileName.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
 
         return safeName;
+    }
+
+    private static string Sanitize(string input)
+    {
+        var safeName = string.Join("_",
+            input.Split(Path.GetInvalidFileNameChars(),
+                StringSplitOptions.RemoveEmptyEntries));
+        return safeName.Length > 120 ? safeName[..120] : safeName;
     }
 
     static string GetClientFolderName(HttpListenerRequest req)
