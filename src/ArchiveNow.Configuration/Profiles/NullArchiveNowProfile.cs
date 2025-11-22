@@ -36,7 +36,7 @@ namespace ArchiveNow.Configuration.Profiles
 
         public string Password => string.Empty;
 
-        public bool UsePlainTextPasswords => false;
+        public bool UsePlainTextPasswords { get { return false;  } set { } }
 
         public string ProviderName => string.Empty;
 
@@ -64,8 +64,6 @@ namespace ArchiveNow.Configuration.Profiles
         public string DestinationPath => string.Empty;
 
         public bool BreakActionsIfError => false;
-
-        bool IArchiveNowProfile.UsePlainTextPasswords { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public virtual bool IsValid(out string message)
         {

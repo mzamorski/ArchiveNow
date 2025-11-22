@@ -51,7 +51,7 @@ namespace ArchiveNow.Service.ArchiveProviders
             Database.FileStorage.SetMetadata(id, metadata);
         }
 
-        public override void BeginUpdate()
+        public override void BeginUpdate(string sourcePath)
         {
             var connectionString = new ConnectionString(ArchiveFilePath)
             {

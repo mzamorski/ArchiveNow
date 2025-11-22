@@ -24,7 +24,7 @@ namespace ArchiveNow.Service.ArchiveProviders
         public void Add(string path)
         { }
 
-        public void BeginUpdate()
+        public void BeginUpdate(string sourcePath)
         { }
 
         public void CommitUpdate()

@@ -275,7 +275,7 @@ namespace ArchiveNow.Service
                 progressIndicator.IsIndeterminate = isIndeterminate;
             };
 
-            archiveProvider.BeginUpdate();
+            archiveProvider.BeginUpdate(context.SourcePath);
 
             var report = new ArchiveNowProgressReport(context.Entries.Count);
 

@@ -10,6 +10,11 @@ namespace ArchiveNow.Providers.Core.FileNameBuilders
 
         protected string ChangeExtension(string path, string fileExtension)
         {
+            if (string.IsNullOrWhiteSpace(fileExtension))
+            {
+                return path;
+            }
+
             //string output = path.IsDirectory()
             //    ? $"{path}.{fileExtension}"
             //    : Path.ChangeExtension(path, fileExtension);

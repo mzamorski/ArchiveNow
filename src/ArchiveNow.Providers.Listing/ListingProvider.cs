@@ -51,7 +51,7 @@ namespace ArchiveNow.Providers.Listing
         public override void AddDirectory(string path)
         { }
 
-        public override void BeginUpdate()
+        public override void BeginUpdate(string sourcePath)
         {
         }
 

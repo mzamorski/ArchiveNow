@@ -45,7 +45,7 @@ namespace ArchiveNow.Service.ArchiveProviders
             return new WindowsNameTransform();
         }
 
-        public override void BeginUpdate()
+        public override void BeginUpdate(string sourcePath)
         {
             _zipFile.BeginUpdate();
 

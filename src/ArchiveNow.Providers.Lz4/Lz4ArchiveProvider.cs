@@ -28,7 +28,7 @@ namespace ArchiveNow.Providers.Lz4
 
         }
 
-        public override void BeginUpdate()
+        public override void BeginUpdate(string sourcePath)
         { }
 
         public override void CommitUpdate()
