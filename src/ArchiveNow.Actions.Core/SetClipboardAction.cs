@@ -32,7 +32,7 @@ namespace ArchiveNow.Actions.Core
                 message = ex.Message;
             }
 
-            return new AfterFinishedActionResult(hasError.Not(), message);
+            return new AfterFinishedActionResult(hasError.Not(), context.InputPath, message);
         }
     }
 }
