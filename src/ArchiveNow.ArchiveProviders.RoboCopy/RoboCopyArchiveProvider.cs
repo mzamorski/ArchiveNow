@@ -25,6 +25,9 @@ namespace ArchiveNow.Providers.RoboCopy
             _backup.OnCommandCompleted += OnCommandCompleted;
             _backup.OnCopyProgressChanged += OnCopyProgressChanged;
 
+            _backup.RetryOptions.RetryCount = 0;
+            _backup.CopyOptions.MultiThreadedCopiesCount = 16;
+            _backup.CopyOptions.UseUnbufferedIo = true;
             _backup.CopyOptions.CopySubdirectories = true;
             _backup.CopyOptions.Destination = ArchiveFilePath;
         }
