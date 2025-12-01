@@ -64,7 +64,7 @@ namespace ArchiveNow.Providers.Core
 
         public abstract void Add(string path);
 
-        public abstract void BeginUpdate();
+        public abstract void BeginUpdate(string sourcePath);
 
         public abstract void CommitUpdate();
 

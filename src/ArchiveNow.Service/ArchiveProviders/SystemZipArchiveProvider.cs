@@ -45,7 +45,7 @@ namespace ArchiveNow.Service.ArchiveProviders
             _zipArchive.CreateEntryFromFile(path, relativePath, CompressionLevel.Fastest);
         }
 
-        public override void BeginUpdate()
+        public override void BeginUpdate(string sourcePath)
         { }
 
         public override void CommitUpdate()

@@ -121,7 +121,7 @@ namespace ArchiveNow.Providers.MsiPackage
             ApplySimulateLatency(1);
         }
 
-        public override void BeginUpdate()
+        public override void BeginUpdate(string sourcePath)
         {
             CurrentProgressMode = ProgressMode.Determinate;
         }

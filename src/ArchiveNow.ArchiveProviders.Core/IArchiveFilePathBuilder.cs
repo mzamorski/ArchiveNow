@@ -4,5 +4,4 @@
     {
         string Build(string fileExtension);
     }
-
 }
