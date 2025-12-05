@@ -7,7 +7,7 @@
         xmlns:Views="clr-namespace:ArchiveNow.Views"
         xmlns:Converters="clr-namespace:ArchiveNow.Views.Converters"
         mc:Ignorable="d"
-        Title="Archiving..." Height="151.938" Width="489.99" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
+        Title="Archiving..." Height="155" Width="490" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="Manual"
         >
@@ -40,7 +40,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
+            <RowDefinition Height="24" />
             <RowDefinition Height="20" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -52,7 +52,21 @@
                 </ToolTip>
             </TextBlock.ToolTip>           
         </TextBlock>
-        <TextBlock Grid.Row="1" x:Name="filePathTextBox" TextTrimming="CharacterEllipsis">File...</TextBlock>
+
+        <DockPanel Grid.Row="1">
+            <TextBlock Text="📄"
+                FontSize="16"
+                Margin="0,0,6,0"
+                DockPanel.Dock="Left"/>
+
+            <TextBlock x:Name="filePathTextBox"
+                VerticalAlignment="Center"
+                TextTrimming="CharacterEllipsis"
+                FontStyle="Italic"
+                Foreground="DarkSlateGray"
+                ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+        </DockPanel>
+
         <!--<ProgressBar Grid.Row="2" Name="archivingProgressBar" Value="{Binding ElementName=progress, Path=Value}" Background="Cornsilk" />-->
         <ProgressBar Grid.Row="2" Name="archivingProgressBar" Value="{Binding ElementName=progress, Path=Value}" Background="Cornsilk"
                      Style="{StaticResource ProgressBarStyle}">
