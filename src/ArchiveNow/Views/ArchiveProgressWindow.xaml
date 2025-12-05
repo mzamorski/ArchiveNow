@@ -7,8 +7,9 @@
         xmlns:Views="clr-namespace:ArchiveNow.Views"
         xmlns:Converters="clr-namespace:ArchiveNow.Views.Converters"
         mc:Ignorable="d"
-        Title="Archiving..." Height="151.938" Width="489.99" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
+        Title="Archiving..." Height="151.938" Width="489.99" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        WindowStartupLocation="Manual"
         >
 
     <!--<Window.DataContext>
@@ -59,13 +60,15 @@
         <TextBlock Grid.Row="2" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Grid.Row="3">
-            <TextBlock Text="Elapsed time:" VerticalAlignment="Center" />
-            <TextBlock x:Name="elapsedTimeTextBlock"
-               Text="00:00:00"
-               Margin="5,0,0,0"
-               VerticalAlignment="Center" />
+            <TextBlock Text="⏱" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="16" />
+            <TextBlock x:Name="elapsedTimeTextBlock" 
+                   VerticalAlignment="Center"
+                   Text="00:00:00"
+                   FontFamily="Consolas"
+                   FontWeight="Bold"
+                   Foreground="#1E40AF"/>
         </StackPanel>
-        
+
         <Button Grid.Row="3" x:Name="_cancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="353,12,0,-16" VerticalAlignment="Top" Width="80" Height="26" Click="OnCancelButtonClick"
                 Visibility="{Binding Path=IsNotFinished, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
                 />

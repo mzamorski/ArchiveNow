@@ -1,16 +1,17 @@
-﻿using System;
+﻿using ArchiveNow.Actions.Core;
+using ArchiveNow.Service;
+using ArchiveNow.Utils;
+using ArchiveNow.Utils.Threading;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-
-using ArchiveNow.Actions.Core;
-using ArchiveNow.Service;
-using ArchiveNow.Utils;
-using ArchiveNow.Utils.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace ArchiveNow.Views
 {
@@ -32,6 +33,8 @@ namespace ArchiveNow.Views
         public bool HasAnyError { get; set; }
 
         public bool IsFinished { get; set; }
+
+        public bool CloseWindowOnSuccess { get; set; } = false;
 
         public ArchiveProgressWindow()
         {
@@ -115,9 +118,10 @@ namespace ArchiveNow.Views
             IsFinished = true;
             HasAnyError = !result.IsSuccess;
 
-            OnUIUpdateTextCloseButton(true);
-            OnUIUpdateVisibilityPauseButton(false);
-            OnUIUpdateFilePathTextBox(string.Empty);
+            UpdateButtonVisibility(_pauseButton, false);
+            UpdateButtonVisibility(_cancelButton, false);
+            UpdateButtonVisibility(_closeButton, true);
+
             OnUIUpdateDirectoryPathTextBox(result.IsSuccess ? "Done." : $"Error! {result.Message}");
             OnUIUpdateProgressBar(result.IsSuccess);
         }
@@ -142,14 +146,11 @@ namespace ArchiveNow.Views
             OnUIThread(() => directoryPathTextBox.Text = path);
         }
 
-        private void OnUIUpdateVisibilityPauseButton(bool isVisible)
+        private void UpdateButtonVisibility(Button button, bool isVisible)
         {
-            OnUIThread(() => _pauseButton.Visibility = isVisible ? Visibility.Visible : Visibility.Hidden);
-        }
-
-        private void OnUIUpdateTextCloseButton(bool isFinished)
-        {
-            OnUIThread(() => _closeButton.Content = isFinished ? CloseText : CancelText);
+            OnUIThread(() =>
+                button.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed
+            );
         }
 
         private void OnUIUpdateProgressBar(bool isSuccess)
@@ -226,7 +227,14 @@ namespace ArchiveNow.Views
 
             if (HasAnyError.IsNotTrue())
             {
-                Close();
+                if (CloseWindowOnSuccess)
+                {
+                    Close();
+                }
+                else
+                {
+                    //OnUIUpdateVisibilityPauseButton(false);
+                }
             }
         }
 
