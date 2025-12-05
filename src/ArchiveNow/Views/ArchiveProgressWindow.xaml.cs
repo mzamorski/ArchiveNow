@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
+
 using ArchiveNow.Actions.Core;
 using ArchiveNow.Service;
 using ArchiveNow.Utils;
@@ -11,9 +14,6 @@ using ArchiveNow.Utils.Threading;
 
 namespace ArchiveNow.Views
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ArchiveProgressWindow : Window
     {
         private const string CloseText = "Close";
@@ -25,6 +25,9 @@ namespace ArchiveNow.Views
         private readonly string _path;
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly PauseTokenSource _pauseTokenSource = new PauseTokenSource();
+
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly DispatcherTimer _timer;
 
         public bool HasAnyError { get; set; }
 
@@ -52,6 +55,23 @@ namespace ArchiveNow.Views
             Title = _service.IsUsingProfile
                 ? $"Archiving... (using profile: \"{_service.Profile.Name}\")"
                 : "Archiving...";
+
+
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _timer.Tick += OnTimerTick;
+        }
+
+        private void OnTimerTick(object sender, EventArgs e)
+        {
+            if (!_stopwatch.IsRunning)
+                return;
+
+            var elapsed = _stopwatch.Elapsed;
+
+            elapsedTimeTextBlock.Text = elapsed.ToString(@"hh\:mm\:ss");
         }
 
         private void OnActionExecuting(object sender, AfterFinishedActionEventArgs args)
@@ -167,6 +187,10 @@ namespace ArchiveNow.Views
         private void OnCancelButtonClick(object sender, RoutedEventArgs e)
         {
             _cancelTokenSource.Cancel();
+
+            _stopwatch.Stop();
+            _timer.Stop();
+
             Close();
         }
 
@@ -181,6 +205,9 @@ namespace ArchiveNow.Views
         {
             var progressIndicator = new ArchiveNowProgress(OnReportProgress);
 
+            _stopwatch.Start();
+            _timer.Start();
+
             try
             {
                 await ArchiveAsync(_path, progressIndicator, _cancelTokenSource.Token, _pauseTokenSource.Token);
@@ -190,6 +217,11 @@ namespace ArchiveNow.Views
                 var message = $"{ex.Message}\n\n{ex.InnerException?.Message}";
 
                 MessageBox.Show(message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _stopwatch.Stop();
+                _timer.Stop();
             }
 
             if (HasAnyError.IsNotTrue())

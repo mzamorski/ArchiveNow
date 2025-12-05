@@ -1,3 +1,5 @@
+using System;
+
 namespace ArchiveNow.Service
 {
     public interface IArchiveResult
@@ -7,5 +9,7 @@ namespace ArchiveNow.Service
         string Message { get; }
 
         string ArchivePath { get; }
+
+        TimeSpan Duration { get; }
     }
 }
