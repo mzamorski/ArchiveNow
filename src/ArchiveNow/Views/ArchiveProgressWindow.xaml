@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ArchiveNow"
         xmlns:Views="clr-namespace:ArchiveNow.Views"
         xmlns:Converters="clr-namespace:ArchiveNow.Views.Converters"
+        xmlns:shell="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
         Title="Archiving..." Height="155" Width="490" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -15,7 +16,10 @@
     <!--<Window.DataContext>
         <Views:ArchiveProgressWindow />
     </Window.DataContext>-->
-
+    
+    <Window.TaskbarItemInfo>
+        <shell:TaskbarItemInfo />
+    </Window.TaskbarItemInfo>
 
     <Window.Resources>
         <Converters:ProgressForegroundConverter x:Key="ProgressForegroundConverter"/>

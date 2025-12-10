@@ -12,8 +12,8 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shell;
 using System.Windows.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace ArchiveNow.Views
 {
@@ -131,6 +131,14 @@ namespace ArchiveNow.Views
 
             OnUIUpdateDirectoryPathTextBox(result.IsSuccess ? "Done." : $"Error! {result.Message}");
             OnUIUpdateProgressBar(result.IsSuccess);
+
+            OnUIThread(() =>
+            {
+                TaskbarItemInfo.ProgressValue = 1.0;
+                TaskbarItemInfo.ProgressState = result.IsSuccess
+                    ? TaskbarItemProgressState.None
+                    : TaskbarItemProgressState.Error;
+            });
         }
 
         private void OnServiceDirectoryAdded(object sender, string path)
@@ -162,6 +170,25 @@ namespace ArchiveNow.Views
 
         private void OnUIUpdateProgressBar(bool isSuccess)
         {
+            var color = isSuccess
+                ? Colors.Green
+                : Colors.Red;
+
+            var taskbarState = isSuccess
+                ? TaskbarItemProgressState.Normal
+                : TaskbarItemProgressState.Error;
+
+            OnUIThread(() =>
+            {
+                archivingProgressBar.Foreground = new SolidColorBrush(color);
+
+                TaskbarItemInfo.ProgressState = taskbarState;
+                TaskbarItemInfo.ProgressValue = 1.0;
+            });
+        }
+
+        private void _OnUIUpdateProgressBar(bool isSuccess)
+        {
             OnUIThread(() =>
             {
                 archivingProgressBar.Foreground =
@@ -172,6 +199,7 @@ namespace ArchiveNow.Views
                     );
             });
         }
+
         private void OnUIUpdateFilePathTextBox(string path)
         {
             OnUIThread(() =>
@@ -200,6 +228,12 @@ namespace ArchiveNow.Views
             IsFinished = false;
 
             OnUIUpdateProgressBar(entriesToProcess);
+
+            OnUIThread(() =>
+            {
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+                TaskbarItemInfo.ProgressValue = 0.0;
+            });
         }
 
         private void OnCancelButtonClick(object sender, RoutedEventArgs e)
@@ -269,9 +303,17 @@ namespace ArchiveNow.Views
             if (value.IsIndeterminate)
             {
                 archivingProgressBar.IsIndeterminate = true;
-            }
 
-            archivingProgressBar.Value = value.ProcessedEntriesCount;
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+            else
+            {
+                archivingProgressBar.IsIndeterminate = false;
+                archivingProgressBar.Value = value.ProcessedEntriesCount;
+
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+                TaskbarItemInfo.ProgressValue = archivingProgressBar.Value / archivingProgressBar.Maximum;
+            }
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs args)
