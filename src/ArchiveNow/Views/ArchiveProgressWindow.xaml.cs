@@ -155,13 +155,15 @@ namespace ArchiveNow.Views
 
         private void OnUIUpdateProgressBar(bool isSuccess)
         {
-            if (isSuccess)
+            OnUIThread(() =>
             {
-                return;
-            }
-
-            //OnUIThread(() => archivingProgressBar.UpdateDefaultStyle());
-            OnUIThread(() => archivingProgressBar.Foreground = new SolidColorBrush { Color = Colors.Red });
+                archivingProgressBar.Foreground =
+                    new SolidColorBrush(
+                        isSuccess
+                            ? Colors.Green
+                            : Colors.Red
+                    );
+            });
         }
 
         private void OnUIUpdateFilePathTextBox(string path)
