@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Archiving..." Height="155" Width="490" ResizeMode="NoResize" Topmost="False" Loaded="OnWindowLoaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterScreen"
         >
 
     <!--<Window.DataContext>

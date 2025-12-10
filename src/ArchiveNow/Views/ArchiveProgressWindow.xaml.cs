@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
@@ -118,6 +120,11 @@ namespace ArchiveNow.Views
             IsFinished = true;
             HasAnyError = !result.IsSuccess;
 
+            if (result.IsSuccess)
+            {
+                ActivateFileHyperlink(result.ArchivePath);
+            }
+
             UpdateButtonVisibility(_pauseButton, false);
             UpdateButtonVisibility(_cancelButton, false);
             UpdateButtonVisibility(_closeButton, true);
@@ -165,11 +172,19 @@ namespace ArchiveNow.Views
                     );
             });
         }
-
         private void OnUIUpdateFilePathTextBox(string path)
         {
-            OnUIThread(() => filePathTextBox.Text = Path.GetFileName(path));
+            OnUIThread(() =>
+            {
+                filePathTextBox.Inlines.Clear();
+                filePathTextBox.Inlines.Add(new Run(path));
+            });
         }
+
+        //private void OnUIUpdateFilePathTextBox(string path)
+        //{
+        //    OnUIThread(() => filePathTextBox.Text = Path.GetFileName(path));
+        //}
 
         private void OnUIUpdateProgressBar(int entriesToProcess)
         {
@@ -262,6 +277,59 @@ namespace ArchiveNow.Views
         private void OnCloseButtonClick(object sender, RoutedEventArgs args)
         {
             Close();
+        }
+
+        private string _outputFilePath;
+
+        private void OnFileHyperlinkClick(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_outputFilePath))
+            {
+                return;
+            }
+
+            if (!File.Exists(_outputFilePath))
+            {
+                MessageBox.Show(
+                    $"The file does not exist:\n{_outputFilePath}",
+                    "File not found",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = _outputFilePath,
+                UseShellExecute = true
+            });
+        }
+
+        private void ActivateFileHyperlink(string path)
+        {
+            _outputFilePath = path;
+
+            OnUIThread(() =>
+            {
+                var fileName = Path.GetFileName(path);
+
+                filePathTextBox.Inlines.Clear();
+
+                if (!File.Exists(path))
+                {
+                    filePathTextBox.Text = fileName;
+                }
+                else
+                {
+                    var link = new Hyperlink(new Run(fileName))
+                    {
+                        Cursor = Cursors.Hand
+                    };
+                    link.Click += OnFileHyperlinkClick;
+                    filePathTextBox.Inlines.Add(link);
+                }
+            });
         }
     }
 }
