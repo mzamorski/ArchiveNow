@@ -34,7 +34,7 @@ namespace ArchiveNow.Providers.Core.FileNameBuilders
         }
 
         public FileNameBuilderContext(string fileName)
-            : this(fileName, DateTime.UtcNow)
+            : this(fileName, DateTime.Now)
         { }
     }
 }
