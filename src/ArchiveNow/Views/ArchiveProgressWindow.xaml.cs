@@ -187,19 +187,6 @@ namespace ArchiveNow.Views
             });
         }
 
-        private void _OnUIUpdateProgressBar(bool isSuccess)
-        {
-            OnUIThread(() =>
-            {
-                archivingProgressBar.Foreground =
-                    new SolidColorBrush(
-                        isSuccess
-                            ? Colors.Green
-                            : Colors.Red
-                    );
-            });
-        }
-
         private void OnUIUpdateFilePathTextBox(string path)
         {
             OnUIThread(() =>
@@ -208,11 +195,6 @@ namespace ArchiveNow.Views
                 filePathTextBox.Inlines.Add(new Run(path));
             });
         }
-
-        //private void OnUIUpdateFilePathTextBox(string path)
-        //{
-        //    OnUIThread(() => filePathTextBox.Text = Path.GetFileName(path));
-        //}
 
         private void OnUIUpdateProgressBar(int entriesToProcess)
         {
