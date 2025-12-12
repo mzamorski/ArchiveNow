@@ -19,7 +19,9 @@ namespace ArchiveNow.Service.ArchiveProviders
             : base(archiveFilePathBuilder, passwordProvider)
         {
             _entryTransform = entryTransform;
-            _zipArchive = ZipFile.Open(ArchiveFilePath, ZipArchiveMode.Create);
+
+            var fileStream = new FileStream(ArchiveFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            _zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Create, leaveOpen: false);
         }
 
         public override void Dispose()

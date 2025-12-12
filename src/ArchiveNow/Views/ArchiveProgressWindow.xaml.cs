@@ -138,6 +138,8 @@ namespace ArchiveNow.Views
 
             OnUIThread(() =>
             {
+                elapsedTimeTextBlock.Foreground = SystemColors.ControlTextBrush;
+
                 TaskbarItemInfo.ProgressValue = 1.0;
                 TaskbarItemInfo.ProgressState = result.IsSuccess
                     ? TaskbarItemProgressState.None
