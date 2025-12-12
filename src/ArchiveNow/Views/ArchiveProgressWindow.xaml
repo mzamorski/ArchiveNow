@@ -71,7 +71,6 @@
                 ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
         </DockPanel>
 
-        <!--<ProgressBar Grid.Row="2" Name="archivingProgressBar" Value="{Binding ElementName=progress, Path=Value}" Background="Cornsilk" />-->
         <ProgressBar Grid.Row="2" Name="archivingProgressBar" Value="{Binding ElementName=progress, Path=Value}" Background="Cornsilk"
                      Style="{StaticResource ProgressBarStyle}" Foreground="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
         </ProgressBar>
@@ -84,7 +83,7 @@
                    Text="00:00:00"
                    FontFamily="Consolas"
                    FontWeight="Bold"
-                   Foreground="#1E40AF"/>
+                   Foreground="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         </StackPanel>
 
         <Button Grid.Row="3" x:Name="_cancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="353,12,0,-16" VerticalAlignment="Top" Width="80" Height="26" Click="OnCancelButtonClick"

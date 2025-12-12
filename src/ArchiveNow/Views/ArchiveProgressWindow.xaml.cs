@@ -19,8 +19,6 @@ namespace ArchiveNow.Views
 {
     public partial class ArchiveProgressWindow : Window
     {
-        private const string CloseText = "Close";
-        private const string CancelText = "Cancel";
         private const string PauseText = "Pause";
         private const string ResumeText = "Resume";
 
@@ -107,6 +105,12 @@ namespace ArchiveNow.Views
 
             OnUIUpdateDirectoryPathTextBox(args.Result.IsSuccess ? "Done." : "Error!");
             OnUIUpdateProgressBar(args.Result.IsSuccess);
+        }
+        private void OnServiceInitialized(object sender, int entriesToProcess)
+        {
+            IsFinished = false;
+
+            OnUIUpdateProgressBar(entriesToProcess);
         }
 
         private void OnServiceCommit(object sender, string path)
@@ -202,19 +206,6 @@ namespace ArchiveNow.Views
             {
                 archivingProgressBar.Value = 0;
                 archivingProgressBar.Maximum = entriesToProcess;
-            });
-        }
-
-        private void OnServiceInitialized(object sender, int entriesToProcess)
-        {
-            IsFinished = false;
-
-            OnUIUpdateProgressBar(entriesToProcess);
-
-            OnUIThread(() =>
-            {
-                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
-                TaskbarItemInfo.ProgressValue = 0.0;
             });
         }
 
