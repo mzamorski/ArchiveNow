@@ -76,7 +76,7 @@ namespace ArchiveNow.Service.ArchiveProviders
         {
             if (path.EndsWith("session.lock"))
             {
-                _zipFile.Add(new Dupa(path), path);
+                _zipFile.Add(new FileSnapshotDataSource(path), path);
                 return;
             }
 
@@ -89,34 +89,30 @@ namespace ArchiveNow.Service.ArchiveProviders
         }
     }
 
-    class Dupa : IStaticDataSource
+    sealed class FileSnapshotDataSource : IStaticDataSource
     {
         private readonly string _filePath;
 
-        public Dupa(string filePath)
+        public FileSnapshotDataSource(string filePath)
         {
             _filePath = filePath;
         }
 
         public Stream GetSource()
         {
-            try
-            {
-                using (MemoryStream ms = new MemoryStream())
-                using (var fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    fs.CopyTo(ms);
+            var ms = new MemoryStream();
 
-                    return ms;
-                }
-            }
-            catch (Exception ex)
+            using (var fs = new FileStream(
+                _filePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite))
             {
-
+                fs.CopyTo(ms);
             }
-            
-            throw new InvalidOperationException();
-            
+
+            ms.Position = 0;
+            return ms;
         }
     }
 }
