@@ -53,7 +53,7 @@ namespace ArchiveNow.Service.ArchiveProviders
                         {
                             "Listing",
                             (pathBuilder, entryTransform, passwordProvider) =>
-                                new ListingProvider(pathBuilder)
+                                new ListingProvider(pathBuilder, entryTransform)
                         },
                     };
 

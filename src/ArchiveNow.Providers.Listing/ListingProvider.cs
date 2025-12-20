@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-
-using ArchiveNow.Providers.Core;
+﻿using ArchiveNow.Providers.Core;
+using ArchiveNow.Providers.Core.EntryTransforms;
 using ArchiveNow.Providers.Listing.FailedHashProviders;
 using ArchiveNow.Providers.Listing.HashFormatters;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace ArchiveNow.Providers.Listing
 {
     public class ListingProvider : ArchiveProviderBase
     {
-        private readonly string ErrorHash = "<Failed to compute hash>";
-
+        private readonly IArchiveEntryTransform _entryTransform;
         private readonly HashAlgorithm _hashAlgorithm;
         private readonly List<ListingEntry> _entries = new List<ListingEntry>();
         private readonly IListingEntryFormatter _lineFormatter;
@@ -20,9 +19,10 @@ namespace ArchiveNow.Providers.Listing
 
         public override string FileExtension => "lst";
 
-        public ListingProvider(IArchiveFilePathBuilder pathBuilder) 
+        public ListingProvider(IArchiveFilePathBuilder pathBuilder, IArchiveEntryTransform entryTransform) 
             : base(pathBuilder)
         {
+            _entryTransform = entryTransform;
             _hashAlgorithm = MD5.Create();
             _failedHashProvider = new MessageFailedHashProvider();
             _lineFormatter = DefaultListingEntryFormatter.Instance;
@@ -34,7 +34,7 @@ namespace ArchiveNow.Providers.Listing
 
             var hash = CalculateHash(path);
 
-            _entries.Add(new ListingEntry(path)
+            _entries.Add(new ListingEntry(_entryTransform.Transform(path))
             {
                 Size = fileInfo.Length,
                 ModifiedDate = fileInfo.LastWriteTime,

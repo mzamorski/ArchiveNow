@@ -9,9 +9,7 @@ namespace ArchiveNow.Providers.Core.EntryTransforms
         public static NullArchiveEntryTransform Instance => _instance.Value;
 
         private NullArchiveEntryTransform()
-        {
-            //Implent here the initialization of your singleton
-        }
+        { }
 
         public string Transform(string path)
         {

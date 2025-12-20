@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="ArchiveProviderBase.cs" />
     <Compile Include="EntryTransforms\IArchiveEntryTransform.cs" />
+    <Compile Include="EntryTransforms\LeaveOriginalPathTransform.cs" />
     <Compile Include="EntryTransforms\NullArchiveEntryTransform.cs" />
     <Compile Include="EntryTransforms\RelativePathTransform.cs" />
     <Compile Include="FileNameBuilders\AddDateTimeFileNameBuilder.cs" />
