@@ -47,5 +47,48 @@ namespace ArchiveNow.Utils.IO
 
             return (Directory.Exists(path) || File.Exists(path));
         }
+
+        /// <summary>
+        /// Determines if the path is a file or directory and deletes it.
+        /// Returns true if the element existed and deletion was attempted.
+        /// Returns false if the element did not exist.
+        /// </summary>
+        public static bool DeletePath(string path)
+        {
+            try
+            {
+                // Optimization: GetAttributes checks existence and type in a single I/O call.
+                // If the path does not exist, it throws FileNotFoundException or DirectoryNotFoundException.
+                FileAttributes attr = File.GetAttributes(path);
+
+                // Check if the path points to a directory
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    // Recursive delete allows removing non-empty directories
+                    Directory.Delete(path, true);
+                }
+                else
+                {
+                    // Remove ReadOnly attribute if present to prevent UnauthorizedAccessException on delete
+                    if ((attr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        File.SetAttributes(path, attr & ~FileAttributes.ReadOnly);
+                    }
+
+                    File.Delete(path);
+                }
+
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                return false; // File does not exist
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return false; // Directory does not exist
+            }
+            // Other exceptions (e.g. UnauthorizedAccessException due to permissions) are propagated up to Execute
+        }
     }
 }

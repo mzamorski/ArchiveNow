@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using ArchiveNow.Actions.Core.Result;
 using ArchiveNow.Utils;
+using ArchiveNow.Utils.IO;
 
 namespace ArchiveNow.Actions.Core
 {
@@ -20,16 +21,15 @@ namespace ArchiveNow.Actions.Core
 
             try
             {
-                if (File.Exists(context.InputPath))
+                // Attempt to delete the main input path.
+                // Returns true if the path existed and was processed.
+                if (FileSystemExtensions.DeletePath(context.InputPath))
                 {
-                    File.Delete(context.InputPath);
-
+                    // If the main path existed, proceed to clear additional paths.
+                    // We ignore return values here as we just want to ensure they are gone.
                     foreach (var path in context.AdditionalPaths)
                     {
-                        if (File.Exists(path))
-                        {
-                            File.Delete(path);
-                        }
+                        FileSystemExtensions.DeletePath(path);
                     }
 
                     context.AdditionalPaths.Clear();
