@@ -139,11 +139,6 @@ namespace ArchiveNow.Views
             OnUIThread(() =>
             {
                 elapsedTimeTextBlock.Foreground = SystemColors.ControlTextBrush;
-
-                TaskbarItemInfo.ProgressValue = 1.0;
-                TaskbarItemInfo.ProgressState = result.IsSuccess
-                    ? TaskbarItemProgressState.None
-                    : TaskbarItemProgressState.Error;
             });
         }
 
@@ -186,7 +181,9 @@ namespace ArchiveNow.Views
 
             OnUIThread(() =>
             {
+                archivingProgressBar.IsIndeterminate = false;
                 archivingProgressBar.Foreground = new SolidColorBrush(color);
+                archivingProgressBar.Value = archivingProgressBar.Maximum;
 
                 TaskbarItemInfo.ProgressState = taskbarState;
                 TaskbarItemInfo.ProgressValue = 1.0;
@@ -275,20 +272,23 @@ namespace ArchiveNow.Views
 
         private void OnReportProgress(ArchiveNowProgressReport value)
         {
-            if (value.IsIndeterminate)
+            OnUIThread(() =>
             {
-                archivingProgressBar.IsIndeterminate = true;
+                if (value.IsIndeterminate)
+                {
+                    archivingProgressBar.IsIndeterminate = true;
 
-                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
-            }
-            else
-            {
-                archivingProgressBar.IsIndeterminate = false;
-                archivingProgressBar.Value = value.ProcessedEntriesCount;
+                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+                }
+                else
+                {
+                    archivingProgressBar.IsIndeterminate = false;
+                    archivingProgressBar.Value = value.ProcessedEntriesCount;
 
-                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
-                TaskbarItemInfo.ProgressValue = archivingProgressBar.Value / archivingProgressBar.Maximum;
-            }
+                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+                    TaskbarItemInfo.ProgressValue = archivingProgressBar.Value / archivingProgressBar.Maximum;
+                }
+            });
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs args)

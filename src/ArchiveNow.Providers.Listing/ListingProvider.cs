@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ArchiveNow.Providers.Core;
@@ -30,6 +31,8 @@ namespace ArchiveNow.Providers.Listing
             bool useParallelProcessing)
             : base(pathBuilder)
         {
+            SimulateLatency = true;
+
             _entryTransform = entryTransform;
             _useParallelProcessing = useParallelProcessing;
 
@@ -54,7 +57,11 @@ namespace ArchiveNow.Providers.Listing
                 ModifiedDate = fileInfo.LastWriteTime
             };
 
-            if (!_useParallelProcessing)
+            if (_useParallelProcessing)
+            {
+                //ApplySimulateLatency(1);
+            }
+            else
             {
                 // Sequential mode: calculate hash immediately using the shared instance.
                 entry.Hash = CalculateHash(path, _hashAlgorithm);
@@ -67,7 +74,9 @@ namespace ArchiveNow.Providers.Listing
         { }
 
         public override void BeginUpdate(string sourcePath)
-        { }
+        { 
+            CurrentProgressMode = (_useParallelProcessing) ? ProgressMode.Indeterminate : ProgressMode.Determinate; 
+        }
 
         public override void CommitUpdate()
         {
@@ -119,6 +128,7 @@ namespace ArchiveNow.Providers.Listing
                 (item, loopState, algorithm) =>
                 {
                     item.Hash = CalculateHash(item.Path, algorithm);
+
                     return algorithm;
                 },
                 (algorithm) => algorithm.Dispose() // Thread-local cleanup

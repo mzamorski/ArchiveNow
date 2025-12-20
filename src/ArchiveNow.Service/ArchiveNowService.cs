@@ -270,14 +270,27 @@ namespace ArchiveNow.Service
             EnsureArg.IsNotNull(context, nameof(progressIndicator));
 
             IArchiveProvider archiveProvider = context.Provider;
+            
+            var report = new ArchiveNowProgressReport(context.Entries.Count);
+
             archiveProvider.IsProgressIndeterminateChanged += (sender, isIndeterminate) =>
             {
                 progressIndicator.IsIndeterminate = isIndeterminate;
             };
 
-            archiveProvider.BeginUpdate(context.SourcePath);
+            archiveProvider.Finished += (sender, args) =>
+            {
+                report.Done();
+                progressIndicator?.Report(report);
+            };
 
-            var report = new ArchiveNowProgressReport(context.Entries.Count);
+            archiveProvider.FileCompressed += (sender, args) =>
+            {
+                report.Step();
+                progressIndicator?.Report(report);
+            };
+
+            archiveProvider.BeginUpdate(context.SourcePath);
 
             using (var performance = new PerformanceTester())
             {
@@ -314,18 +327,8 @@ namespace ArchiveNow.Service
                 report.Clear();
                 progressIndicator?.Report(report);
 
-                archiveProvider.Finished += (sender, args) =>
-                {
-                    report.Done();
-                    progressIndicator?.Report(report);
-                };
-                archiveProvider.FileCompressed += (sender, args) =>
-                {
-                    report.Step();
-                    progressIndicator?.Report(report);
-                };
-
                 OnCommit(archiveProvider.ArchiveFilePath);
+
                 progressIndicator?.Report(report);
 
                 try

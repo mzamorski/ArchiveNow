@@ -17,6 +17,8 @@ namespace ArchiveNow.Providers.RoboCopy
         public RoboCopyArchiveProvider(IArchiveFilePathBuilder pathBuilder)
             : base(pathBuilder)
         {
+            SimulateLatency = true;
+
             _backup = new RoboCommand();
 
             _backup.OnCommandError += OnCommandError;
@@ -66,11 +68,15 @@ namespace ArchiveNow.Providers.RoboCopy
 
         public override void BeginUpdate(string sourcePath)
         {
+            CurrentProgressMode = ProgressMode.Determinate;
+
             _backup.CopyOptions.Source = sourcePath;
         }
 
         public override void CommitUpdate()
         {
+            CurrentProgressMode = ProgressMode.Indeterminate;
+
             _backup.Start();
             _finishedEvent.Wait();
         }
