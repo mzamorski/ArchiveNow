@@ -66,8 +66,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailedHashProviders\MessageFailedHashProvider.cs" />
+    <Compile Include="HashFormatters\DefaultHashFormatter.cs" />
+    <Compile Include="DefaultListingEntryFormatter.cs" />
+    <Compile Include="FailedHashProviders\IFailedHashProvider.cs" />
+    <Compile Include="HashFormatters\IHashFormatter.cs" />
+    <Compile Include="IListingEntryFormatter.cs" />
+    <Compile Include="ListingEntry.cs" />
     <Compile Include="ListingProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FailedHashProviders\ZeroFailedHashProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArchiveNow.ArchiveProviders.Core\ArchiveNow.Providers.Core.csproj">
