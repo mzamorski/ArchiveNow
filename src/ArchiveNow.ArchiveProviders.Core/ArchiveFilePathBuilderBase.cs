@@ -6,6 +6,8 @@ namespace ArchiveNow.Providers.Core.FileNameBuilders
 {
     public abstract class ArchiveFilePathBuilderBase : IArchiveFilePathBuilder
     {
+        public abstract IFileNameBuilderContext Context { get; }
+
         public abstract string Build(string fileExtension);
 
         protected string ChangeExtension(string path, string fileExtension)

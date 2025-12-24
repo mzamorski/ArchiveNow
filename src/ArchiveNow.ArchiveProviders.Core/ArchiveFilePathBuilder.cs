@@ -17,6 +17,8 @@ namespace ArchiveNow.Providers.Core.FileNameBuilders
         private readonly FileInfo _sourcePath;
         private readonly IFileNameBuilder _fileNameBuilder;
 
+        public override IFileNameBuilderContext Context => _context;
+
         public ArchiveFilePathBuilder(string sourcePath, IFileNameBuilder fileNameBuilder)
         {
             _sourcePath = new FileInfo(sourcePath);
