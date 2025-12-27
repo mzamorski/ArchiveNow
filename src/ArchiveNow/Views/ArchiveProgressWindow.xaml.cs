@@ -1,6 +1,7 @@
 ﻿using ArchiveNow.Actions.Core;
 using ArchiveNow.Service;
 using ArchiveNow.Utils;
+using ArchiveNow.Utils.IO;
 using ArchiveNow.Utils.Threading;
 using System;
 using System.Diagnostics;
@@ -311,7 +312,7 @@ namespace ArchiveNow.Views
                 return;
             }
 
-            if (!File.Exists(_outputFilePath))
+            if (!FileSystemExtensions.PathExists(_outputFilePath))
             {
                 MessageBox.Show(
                     $"The file does not exist:\n{_outputFilePath}",
@@ -339,11 +340,7 @@ namespace ArchiveNow.Views
 
                 filePathTextBox.Inlines.Clear();
 
-                if (!File.Exists(path))
-                {
-                    filePathTextBox.Text = fileName;
-                }
-                else
+                if (FileSystemExtensions.PathExists(path))
                 {
                     var link = new Hyperlink(new Run(fileName))
                     {
@@ -351,6 +348,10 @@ namespace ArchiveNow.Views
                     };
                     link.Click += OnFileHyperlinkClick;
                     filePathTextBox.Inlines.Add(link);
+                }
+                else
+                {
+                    filePathTextBox.Text = fileName;
                 }
             });
         }
