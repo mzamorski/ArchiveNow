@@ -250,10 +250,7 @@ namespace ArchiveNow.Service
 
         private static void CleanUp(string archiveFilePath)
         {
-            if (File.Exists(archiveFilePath))
-            {
-                File.Delete(archiveFilePath);
-            }
+            FileSystemExtensions.DeletePath(archiveFilePath);
         }
 
         private static uint GetSystemMaxPathLength(string driveLetter)
@@ -294,38 +291,41 @@ namespace ArchiveNow.Service
 
             using (var performance = new PerformanceTester())
             {
-                foreach (var entry in context.Entries)
+                if (!archiveProvider.IsBatchOnly)
                 {
-                    Debug.WriteLine($"[{entry.FullName}] [{entry.FullName.Length}]");
-
-                    report.CurrentEntry = entry;
-
-                    if (cancelToken.IsCancellationRequested)
+                    foreach (var entry in context.Entries)
                     {
-                        const string errorMessage = "Archiving has been canceled!";
+                        Debug.WriteLine($"[{entry.FullName}] [{entry.FullName.Length}]");
 
-                        _logger.Error(errorMessage);
+                        report.CurrentEntry = entry;
 
-                        archiveProvider.AbortUpdate();
-                        return ArchiveResult.Fail(errorMessage);
+                        if (cancelToken.IsCancellationRequested)
+                        {
+                            const string errorMessage = "Archiving has been canceled!";
+
+                            _logger.Error(errorMessage);
+
+                            archiveProvider.AbortUpdate();
+                            return ArchiveResult.Abort(errorMessage);
+                        }
+
+                        if (pauseToken.IsPaused)
+                        {
+                            await pauseToken.WaitWhilePausedAsync();
+                        }
+
+                        if (TryAddEntryToArchive(archiveProvider, entry) == false)
+                        {
+                            throw new NotImplementedException("TODO: Polityka w przypadku błędu dodawania pliku do archiwum.");
+                        }
+
+                        report.Step();
+                        progressIndicator?.Report(report);
                     }
 
-                    if (pauseToken.IsPaused)
-                    {
-                        await pauseToken.WaitWhilePausedAsync();
-                    }
-
-                    if (TryAddEntryToArchive(archiveProvider, entry) == false)
-                    {
-                        throw new NotImplementedException("TODO: Polityka w przypadku błędu dodawania pliku do archiwum.");
-                    }
-
-                    report.Step();
+                    report.Clear();
                     progressIndicator?.Report(report);
                 }
-
-                report.Clear();
-                progressIndicator?.Report(report);
 
                 OnCommit(archiveProvider.ArchiveFilePath);
 
@@ -333,7 +333,7 @@ namespace ArchiveNow.Service
 
                 try
                 {
-                    archiveProvider.CommitUpdate();
+                    archiveProvider.CommitUpdate(cancelToken);
                 }
                 catch (Exception ex)
                 {
@@ -341,6 +341,16 @@ namespace ArchiveNow.Service
                     return ArchiveResult.Fail(ex.Message);
                 }
 
+                if (cancelToken.IsCancellationRequested)
+                {
+                    const string errorMessage = "Archiving has been canceled!";
+
+                    _logger.Error(errorMessage);
+
+                    archiveProvider.AbortUpdate();
+                    return ArchiveResult.Abort(errorMessage);
+                }
+                
                 _logger.Info($"Time elapsed: {performance.Result}");
 
                 return ArchiveResult.Success(performance.Result, archiveProvider.ArchiveFilePath);

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-using ArchiveNow.Providers.Core;
+﻿using ArchiveNow.Providers.Core;
 using ArchiveNow.Providers.Core.EntryTransforms;
 using ArchiveNow.Providers.Core.PasswordProviders;
 using LiteDB;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 
 namespace ArchiveNow.Service.ArchiveProviders
 {
@@ -63,7 +63,7 @@ namespace ArchiveNow.Service.ArchiveProviders
 
         private LiteDatabase Database { get; set; }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
             //Database.Shrink();
             Database.Dispose();

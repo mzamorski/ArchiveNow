@@ -1,15 +1,14 @@
-﻿using System;
+﻿using ArchiveNow.Core;
+using ArchiveNow.Providers.Core;
+using ArchiveNow.Providers.Core.EntryTransforms;
+using ArchiveNow.Providers.Core.PasswordProviders;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-
-using ArchiveNow.Core;
-using ArchiveNow.Providers.Core;
-using ArchiveNow.Providers.Core.EntryTransforms;
-using ArchiveNow.Providers.Core.PasswordProviders;
-
+using System.Threading;
 using WixSharp;
 using WixSharp.CommonTasks;
 using WixSharp.Controls;
@@ -126,7 +125,7 @@ namespace ArchiveNow.Providers.MsiPackage
             CurrentProgressMode = ProgressMode.Determinate;
         }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
             CurrentProgressMode = ProgressMode.Indeterminate;
 

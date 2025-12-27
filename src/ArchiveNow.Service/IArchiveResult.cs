@@ -6,6 +6,8 @@ namespace ArchiveNow.Service
     {
         bool IsSuccess { get; }
 
+        bool IsAborted { get; }
+
         string Message { get; }
 
         string ArchivePath { get; }

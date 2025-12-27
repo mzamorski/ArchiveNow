@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
 
 namespace ArchiveNow.Providers.Core
 {
     public interface IArchiveProvider : IDisposable
     {
+        bool IsBatchOnly { get; }
+
         string FileExtension { get; }
 
         string Password { get; }
@@ -16,7 +19,7 @@ namespace ArchiveNow.Providers.Core
 
         void BeginUpdate(string sourcePath);
 
-        void CommitUpdate();
+        void CommitUpdate(CancellationToken cancellationToken = default);
 
         void AbortUpdate();
 

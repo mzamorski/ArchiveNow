@@ -39,10 +39,10 @@ namespace ArchiveNow.Providers.Listing
             _failedHashProvider = new MessageFailedHashProvider();
             _lineFormatter = DefaultListingEntryFormatter.Instance;
 
-            // Create instance only if we are running sequentially.
-            // In parallel mode, instances are created inside the parallel loop to ensure thread safety without locking.
             if (!_useParallelProcessing)
             {
+                // Create instance only if we are running sequentially.
+                // In parallel mode, instances are created inside the parallel loop to ensure thread safety without locking.
                 _hashAlgorithm = MD5.Create();
             }
         }
@@ -78,12 +78,12 @@ namespace ArchiveNow.Providers.Listing
             CurrentProgressMode = (_useParallelProcessing) ? ProgressMode.Indeterminate : ProgressMode.Determinate; 
         }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
             // If parallel mode is enabled, compute hashes now (batch processing).
             if (_useParallelProcessing)
             {
-                ComputeHashesParallel();
+                ComputeHashesParallel(cancellationToken);
             }
 
             // Write result to the output file.
@@ -117,16 +117,19 @@ namespace ArchiveNow.Providers.Listing
             }
         }
 
-        private void ComputeHashesParallel()
+        private void ComputeHashesParallel(CancellationToken cancellationToken)
         {
             // Optimization: Hash instance is created once per thread, not once per file.
             // This reduces object allocation and GC pressure.
             Parallel.ForEach(
                 _entries,
-                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount, CancellationToken = cancellationToken },
                 () => MD5.Create(), // Thread-local init
                 (item, loopState, algorithm) =>
                 {
+                    // Check for cancellation to exit the current iteration immediately.
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     item.Hash = CalculateHash(item.Path, algorithm);
 
                     return algorithm;

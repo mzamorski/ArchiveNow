@@ -14,7 +14,7 @@ namespace ArchiveNow.Providers.Listing
 
         public string Format(ListingEntry entry)
         {
-            return $"{entry.Path}{Separator}{entry.Size}{Separator}{Separator}{entry.Hash}";
+            return $"{entry.Path}{Separator}{entry.Size}{Separator}{entry.ModifiedDate.ToString(DateTimeFormat)}{Separator}{entry.Hash}";
         }
     }
 }

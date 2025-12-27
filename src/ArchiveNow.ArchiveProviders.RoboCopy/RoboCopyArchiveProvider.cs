@@ -13,6 +13,7 @@ namespace ArchiveNow.Providers.RoboCopy
         private readonly RoboCommand _backup;
         private readonly ManualResetEventSlim _finishedEvent = new ManualResetEventSlim(false);
 
+        public override bool IsBatchOnly => true;
 
         public RoboCopyArchiveProvider(IArchiveFilePathBuilder pathBuilder)
             : base(pathBuilder)
@@ -31,9 +32,9 @@ namespace ArchiveNow.Providers.RoboCopy
             _backup.CopyOptions.MultiThreadedCopiesCount = 32;
             _backup.RetryOptions.RetryCount = 0;
             _backup.RetryOptions.RetryWaitTime = 0;
-            _backup.LoggingOptions.NoProgress = true;
-            _backup.LoggingOptions.NoFileList = true;
-            _backup.LoggingOptions.NoDirectoryList = true;
+            _backup.LoggingOptions.NoProgress = false;
+            _backup.LoggingOptions.NoFileList = false;
+            _backup.LoggingOptions.NoDirectoryList = false;
             _backup.CopyOptions.UseUnbufferedIo = false;
 
             _backup.CopyOptions.Destination = ArchiveFilePath;
@@ -46,7 +47,12 @@ namespace ArchiveNow.Providers.RoboCopy
         { }
 
         private void OnCopyProgressChanged(object sender, CopyProgressEventArgs copyProgressEventArgs)
-        { }
+        {
+            if (CancellationToken.IsCancellationRequested)
+            {
+                AbortUpdate();
+            }
+        }
 
         private void OnCommandCompleted(object sender, RoboCommandCompletedEventArgs roboCommandCompletedEventArgs)
         {
@@ -73,8 +79,9 @@ namespace ArchiveNow.Providers.RoboCopy
             _backup.CopyOptions.Source = sourcePath;
         }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
+            CancellationToken = cancellationToken;
             CurrentProgressMode = ProgressMode.Indeterminate;
 
             _backup.Start();

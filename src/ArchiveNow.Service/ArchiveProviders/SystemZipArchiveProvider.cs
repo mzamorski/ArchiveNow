@@ -1,8 +1,9 @@
-﻿using System.IO;
-using System.IO.Compression;
-using ArchiveNow.Providers.Core;
+﻿using ArchiveNow.Providers.Core;
 using ArchiveNow.Providers.Core.EntryTransforms;
 using ArchiveNow.Providers.Core.PasswordProviders;
+using System.IO;
+using System.IO.Compression;
+using System.Threading;
 
 namespace ArchiveNow.Service.ArchiveProviders
 {
@@ -50,7 +51,7 @@ namespace ArchiveNow.Service.ArchiveProviders
         public override void BeginUpdate(string sourcePath)
         { }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
             _zipArchive.Dispose();
         }

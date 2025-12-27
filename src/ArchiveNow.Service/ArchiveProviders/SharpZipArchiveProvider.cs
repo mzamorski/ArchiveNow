@@ -1,13 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using ArchiveNow.Providers.Core;
+﻿using ArchiveNow.Providers.Core;
 using ArchiveNow.Providers.Core.EntryTransforms;
 using ArchiveNow.Providers.Core.PasswordProviders;
 using ArchiveNow.Utils;
-
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading;
 
 
 namespace ArchiveNow.Service.ArchiveProviders
@@ -55,7 +55,7 @@ namespace ArchiveNow.Service.ArchiveProviders
             }
         }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
             _zipFile.CommitUpdate();
 

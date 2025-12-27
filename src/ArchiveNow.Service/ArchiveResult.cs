@@ -5,14 +5,16 @@ namespace ArchiveNow.Service
     public class ArchiveResult : IArchiveResult
     {
         public bool IsSuccess { get; }
-        
+
+        public bool IsAborted { get; }
+
         public string Message { get; set; }
 
         public TimeSpan Duration { get; }
 
         public string ArchivePath { get; }
 
-        public ArchiveResult(bool isSuccess)
+        public ArchiveResult(bool isSuccess, bool isAborted = false)
             : this (isSuccess, TimeSpan.Zero, string.Empty)
         { }
 
@@ -31,6 +33,11 @@ namespace ArchiveNow.Service
         public static ArchiveResult Fail(string message)
         {
             return new ArchiveResult(false) { Message = message };
+        }
+
+        public static ArchiveResult Abort(string message)
+        {
+            return new ArchiveResult(false, true) { Message = message };
         }
     }
 }

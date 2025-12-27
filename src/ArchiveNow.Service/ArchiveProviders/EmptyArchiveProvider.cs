@@ -1,5 +1,6 @@
-﻿using System;
-using ArchiveNow.Providers.Core;
+﻿using ArchiveNow.Providers.Core;
+using System;
+using System.Threading;
 
 namespace ArchiveNow.Service.ArchiveProviders
 {
@@ -11,6 +12,8 @@ namespace ArchiveNow.Service.ArchiveProviders
 
         public void Dispose()
         { }
+
+        public bool IsBatchOnly => false;
 
         public string FileExtension => string.Empty;
 
@@ -27,7 +30,7 @@ namespace ArchiveNow.Service.ArchiveProviders
         public void BeginUpdate(string sourcePath)
         { }
 
-        public void CommitUpdate()
+        public void CommitUpdate(CancellationToken cancellationToken = default)
         { }
 
         public void AbortUpdate()

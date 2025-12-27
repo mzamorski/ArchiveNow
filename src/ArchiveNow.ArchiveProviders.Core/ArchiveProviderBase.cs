@@ -1,14 +1,17 @@
-﻿using ArchiveNow.Providers.Core.PasswordProviders;
+﻿
+using System;
+using System.Threading;
+
+using ArchiveNow.Providers.Core.PasswordProviders;
 using ArchiveNow.Utils;
 using ArchiveNow.Utils.IO;
-using System;
-using System.IO;
-using System.Threading;
 
 namespace ArchiveNow.Providers.Core
 {
     public abstract class ArchiveProviderBase : IArchiveProvider
     {
+        public virtual bool IsBatchOnly { get; protected set; } = false;
+
         public abstract string FileExtension { get; }
 
         public IPasswordProvider PasswordProvider { get; }
@@ -18,6 +21,8 @@ namespace ArchiveNow.Providers.Core
         public string ArchiveFilePath { get; }
 
         public bool SimulateLatency { get; set; } = false;
+
+        protected CancellationToken CancellationToken { get; set; }
 
         protected enum ProgressMode
         {
@@ -46,7 +51,6 @@ namespace ArchiveNow.Providers.Core
         public event EventHandler FileCompressed;
         public event EventHandler Finished;
         public event EventHandler<int> Starting;
-        //public event EventHandler<ProgressMode> ProgressModeChanged;
         public event EventHandler<bool> IsProgressIndeterminateChanged;
 
         protected ArchiveProviderBase(
@@ -68,7 +72,7 @@ namespace ArchiveNow.Providers.Core
 
         public abstract void BeginUpdate(string sourcePath);
 
-        public abstract void CommitUpdate();
+        public abstract void CommitUpdate(CancellationToken cancellationToken = default);
 
         public virtual void AbortUpdate()
         {

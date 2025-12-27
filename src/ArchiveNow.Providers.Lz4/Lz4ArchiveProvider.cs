@@ -1,13 +1,12 @@
-﻿using System.IO;
-using System.Text;
-
-using ArchiveNow.Providers.Core;
-using ArchiveNow.Providers.Core.PasswordProviders;
+﻿using ArchiveNow.Providers.Core;
 using ArchiveNow.Providers.Core.EntryTransforms;
-
+using ArchiveNow.Providers.Core.PasswordProviders;
+using ICSharpCode.SharpZipLib.Tar;
 using K4os.Compression.LZ4;
 using K4os.Compression.LZ4.Streams;
-using ICSharpCode.SharpZipLib.Tar;
+using System.IO;
+using System.Text;
+using System.Threading;
 
 namespace ArchiveNow.Providers.Lz4
 {
@@ -60,7 +59,7 @@ namespace ArchiveNow.Providers.Lz4
             _tarStream.CloseEntry();
         }
 
-        public override void CommitUpdate()
+        public override void CommitUpdate(CancellationToken cancellationToken = default)
         {
             CurrentProgressMode = ProgressMode.Indeterminate;
 

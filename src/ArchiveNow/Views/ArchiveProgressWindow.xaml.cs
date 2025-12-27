@@ -210,12 +210,18 @@ namespace ArchiveNow.Views
 
         private void OnCancelButtonClick(object sender, RoutedEventArgs e)
         {
-            _cancelTokenSource.Cancel();
+            if (!_cancelTokenSource.IsCancellationRequested)
+            {
+                _cancelTokenSource.Cancel();
 
-            _stopwatch.Stop();
-            _timer.Stop();
+                _stopwatch.Stop();
+                _timer.Stop();
 
-            Close();
+                OnUIUpdateDirectoryPathTextBox("Canceling...");
+
+                _cancelButton.IsEnabled = false;
+                _pauseButton.IsEnabled = false;
+            }
         }
 
         private void OnPauseButtonClick(object sender, RoutedEventArgs e)
