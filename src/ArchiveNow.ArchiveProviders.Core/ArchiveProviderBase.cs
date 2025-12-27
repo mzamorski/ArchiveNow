@@ -1,7 +1,9 @@
-﻿using System;
-using System.Threading;
-using ArchiveNow.Providers.Core.PasswordProviders;
+﻿using ArchiveNow.Providers.Core.PasswordProviders;
 using ArchiveNow.Utils;
+using ArchiveNow.Utils.IO;
+using System;
+using System.IO;
+using System.Threading;
 
 namespace ArchiveNow.Providers.Core
 {
@@ -68,7 +70,10 @@ namespace ArchiveNow.Providers.Core
 
         public abstract void CommitUpdate();
 
-        public abstract void AbortUpdate();
+        public virtual void AbortUpdate()
+        {
+            FileSystemExtensions.DeletePath(ArchiveFilePath);
+        }
 
         protected void ApplySimulateLatency(int milliseconds = 100)
         {

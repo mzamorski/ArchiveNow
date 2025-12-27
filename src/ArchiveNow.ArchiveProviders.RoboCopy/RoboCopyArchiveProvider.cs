@@ -1,10 +1,10 @@
-﻿
+﻿using System.Threading;
 
 using ArchiveNow.Providers.Core;
 
 using RoboSharp;
 using RoboSharp.Interfaces;
-using System.Threading;
+
 
 namespace ArchiveNow.Providers.RoboCopy
 {
@@ -84,6 +84,8 @@ namespace ArchiveNow.Providers.RoboCopy
         public override void AbortUpdate()
         {
             _backup.Stop();
+
+            base.AbortUpdate();
         }
     }
 }

@@ -37,9 +37,18 @@ namespace ArchiveNow.Providers.Lz4
 
         public override void Add(string path)
         {
-            CompressFile(path);
+            string entryName = _entryTransform.Transform(path);
 
-            OnFileCompressed();
+            var entry = TarEntry.CreateTarEntry(entryName);
+
+            using (var fs = File.OpenRead(path))
+            {
+                entry.Size = fs.Length;
+                _tarStream.PutNextEntry(entry);
+
+                fs.CopyTo(_tarStream);
+                _tarStream.CloseEntry();
+            }
         }
 
         public override void AddDirectory(string path)
@@ -49,22 +58,6 @@ namespace ArchiveNow.Providers.Lz4
             var entry = TarEntry.CreateTarEntry(entryName);
             _tarStream.PutNextEntry(entry);
             _tarStream.CloseEntry();
-        }
-
-        private void CompressFile(string filePath)
-        {
-            string entryName = _entryTransform.Transform(filePath);
-
-            var entry = TarEntry.CreateTarEntry(entryName);
-
-            using (var fs = File.OpenRead(filePath))
-            {
-                entry.Size = fs.Length;
-                _tarStream.PutNextEntry(entry);
-
-                fs.CopyTo(_tarStream);
-                _tarStream.CloseEntry();
-            }
         }
 
         public override void CommitUpdate()
@@ -95,10 +88,7 @@ namespace ArchiveNow.Providers.Lz4
                 _lz4Stream?.Dispose();
                 _fileStream?.Dispose();
 
-                if (File.Exists(ArchiveFilePath))
-                {
-                    File.Delete(ArchiveFilePath);
-                }
+                base.AbortUpdate();
             }
             catch
             { }

@@ -20,6 +20,8 @@ namespace ArchiveNow.Service.ArchiveProviders
         public SevenZipArchiveProvider(IArchiveFilePathBuilder archiveFilePathBuilder, IPasswordProvider passwordProvider)
             : base(archiveFilePathBuilder, passwordProvider)
         {
+            SimulateLatency = true;
+
             _compressor = new SevenZipCompressor
             {
                 CompressionMethod = CompressionMethod.Deflate,
@@ -50,7 +52,9 @@ namespace ArchiveNow.Service.ArchiveProviders
         }
 
         private void OnCompressing(object sender, ProgressEventArgs args)
-        { }
+        {
+        
+        }
 
         private void OnFileCompressionFinished(object sender, EventArgs args)
         {
@@ -63,18 +67,26 @@ namespace ArchiveNow.Service.ArchiveProviders
         public override void AddDirectory(string path)
         {
             _paths.Add(path);
+
+            ApplySimulateLatency(1);
         }
 
         public override void Add(string path)
         {
             _paths.Add(path);
+
+            ApplySimulateLatency(1);
         }
 
         public override void BeginUpdate(string sourcePath)
-        { }
+        {
+            CurrentProgressMode = ProgressMode.Determinate;
+        }
 
         public override void CommitUpdate()
         {
+            CurrentProgressMode = ProgressMode.Indeterminate;
+
             if (Password.HasValue())
             {
                 _compressor.CompressFilesEncrypted(ArchiveFilePath, Password, _paths.ToArray());
@@ -84,8 +96,5 @@ namespace ArchiveNow.Service.ArchiveProviders
                 _compressor.CompressFiles(ArchiveFilePath, _paths.ToArray());
             }
         }
-
-        public override void AbortUpdate()
-        { }
     }
 }
