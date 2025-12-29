@@ -30,6 +30,7 @@ namespace ArchiveNow.Views
 
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private readonly DispatcherTimer _timer;
+        private string _outputFilePath;
 
         public bool HasAnyError { get; set; }
 
@@ -106,12 +107,6 @@ namespace ArchiveNow.Views
 
             OnUIUpdateDirectoryPathTextBox(args.Result.IsSuccess ? "Done." : "Error!");
             OnUIUpdateProgressBar(args.Result.IsSuccess);
-        }
-        private void OnServiceInitialized(object sender, int entriesToProcess)
-        {
-            IsFinished = false;
-
-            OnUIUpdateProgressBar(entriesToProcess);
         }
 
         private void OnServiceCommit(object sender, string path)
@@ -193,11 +188,7 @@ namespace ArchiveNow.Views
 
         private void OnUIUpdateFilePathTextBox(string path)
         {
-            OnUIThread(() =>
-            {
-                filePathTextBox.Inlines.Clear();
-                filePathTextBox.Inlines.Add(new Run(path));
-            });
+            OnUIThread(() => filePathTextBox.Text = Path.GetFileName(path));
         }
 
         private void OnUIUpdateProgressBar(int entriesToProcess)
@@ -207,6 +198,13 @@ namespace ArchiveNow.Views
                 archivingProgressBar.Value = 0;
                 archivingProgressBar.Maximum = entriesToProcess;
             });
+        }
+
+        private void OnServiceInitialized(object sender, int entriesToProcess)
+        {
+            IsFinished = false;
+
+            OnUIUpdateProgressBar(entriesToProcess);
         }
 
         private void OnCancelButtonClick(object sender, RoutedEventArgs e)
@@ -279,31 +277,25 @@ namespace ArchiveNow.Views
 
         private void OnReportProgress(ArchiveNowProgressReport value)
         {
-            OnUIThread(() =>
+            if (value.IsIndeterminate)
             {
-                if (value.IsIndeterminate)
-                {
-                    archivingProgressBar.IsIndeterminate = true;
+                archivingProgressBar.IsIndeterminate = true;
 
-                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
-                }
-                else
-                {
-                    archivingProgressBar.IsIndeterminate = false;
-                    archivingProgressBar.Value = value.ProcessedEntriesCount;
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+            else
+            {
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+                TaskbarItemInfo.ProgressValue = archivingProgressBar.Value / archivingProgressBar.Maximum;
+            }
 
-                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
-                    TaskbarItemInfo.ProgressValue = archivingProgressBar.Value / archivingProgressBar.Maximum;
-                }
-            });
+            archivingProgressBar.Value = value.ProcessedEntriesCount;
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs args)
         {
             Close();
         }
-
-        private string _outputFilePath;
 
         private void OnFileHyperlinkClick(object sender, RoutedEventArgs e)
         {
