@@ -329,6 +329,7 @@ namespace ArchiveNow.Service
 
                 OnCommit(archiveProvider.ArchiveFilePath);
 
+                progressIndicator.IsIndeterminate = true;
                 progressIndicator?.Report(report);
 
                 try
