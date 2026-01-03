@@ -22,6 +22,8 @@ namespace ArchiveNow.Configuration
 
         public bool ShowSummary { get; set; }
 
+        public bool CloseWindowOnSuccess { get; set; } = false;
+
         public bool HasDefaultProfile => !DefaultProfile.IsEmpty;
 
         public RemoteUploadHostConfiguration RemoteUploadHost { get; set; } = new RemoteUploadHostConfiguration();

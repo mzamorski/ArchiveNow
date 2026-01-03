@@ -13,5 +13,7 @@ namespace ArchiveNow.Configuration
         bool HasDefaultProfile { get; }
 
         bool ShowSummary { get; set; }
+
+        bool CloseWindowOnSuccess { get; set; }
     }
 }

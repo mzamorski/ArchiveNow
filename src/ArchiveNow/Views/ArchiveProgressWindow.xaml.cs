@@ -36,8 +36,6 @@ namespace ArchiveNow.Views
 
         public bool IsFinished { get; set; }
 
-        public bool CloseWindowOnSuccess { get; set; } = false;
-
         public ArchiveProgressWindow()
         {
             InitializeComponent();
@@ -60,7 +58,6 @@ namespace ArchiveNow.Views
             Title = _service.IsUsingProfile
                 ? $"Archiving... (using profile: \"{_service.Profile.Name}\")"
                 : "Archiving...";
-
 
             _timer = new DispatcherTimer
             {
@@ -255,7 +252,7 @@ namespace ArchiveNow.Views
 
             if (HasAnyError.IsNotTrue())
             {
-                if (CloseWindowOnSuccess)
+                if (_service.Configuration.CloseWindowOnSuccess)
                 {
                     Close();
                 }

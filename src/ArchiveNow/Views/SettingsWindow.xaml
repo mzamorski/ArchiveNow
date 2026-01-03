@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ArchiveNow"
+        xmlns:local="clr-namespace:ArchiveNow" xmlns:viewmodels="clr-namespace:ArchiveNow.Views.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
         mc:Ignorable="d"
         Title="ArchiveNow - Settings" Height="692" Width="735" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="OnLoaded">
 
@@ -18,9 +18,13 @@
             <RowDefinition Height="622*" />
             <RowDefinition Height="39*"/>
         </Grid.RowDefinitions>
-
-        <Button x:Name="button" Content="Cancel" HorizontalAlignment="Left" Margin="622,10,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" IsCancel="True" Grid.Row="1" Height="20"/>
-        <Button x:Name="button_Copy" Content="OK" HorizontalAlignment="Left" Margin="542,10,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" Height="20" RenderTransformOrigin="-1.453,0.65"/>
+        
+        <CheckBox Content="Close window automatically after successful archiving"
+          IsChecked="{Binding CloseWindowOnSuccess}"
+          Margin="0,5,0,5" />
+        
+        <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="622,10,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" IsCancel="True" Grid.Row="1" Height="20"/>
+        <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="542,10,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" Height="20" RenderTransformOrigin="-1.453,0.65" Click="OnSaveClick"/>
         <Border BorderBrush="Chocolate" BorderThickness="0,1,0,0" HorizontalAlignment="Left" Height="38" Grid.Row="1" VerticalAlignment="Top" Width="707" />
 
 

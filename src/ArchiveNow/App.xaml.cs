@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows;
-
-using ArchiveNow.Configuration;
+﻿using ArchiveNow.Configuration;
 using ArchiveNow.Configuration.Profiles;
 using ArchiveNow.Configuration.Readers;
 using ArchiveNow.Core.Loggers;
@@ -15,8 +8,13 @@ using ArchiveNow.Utils;
 using ArchiveNow.Utils.IO;
 using ArchiveNow.Utils.Windows;
 using ArchiveNow.Views;
-
 using Fclp;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace ArchiveNow
 {
@@ -36,7 +34,9 @@ namespace ArchiveNow
         private readonly string _configFilePath;
         private readonly string _profilesDirectoryPath;
 
+        private readonly IArchiveNowConfiguration _configuration;
         private readonly IArchiveNowProfileRepository _profileRepository;
+        private readonly IConfigurationProvider<ArchiveNowConfiguration> _configurationProvider;
         private readonly IArchiveNowLogger _logger = new FileLogger();
 
         public App()
@@ -46,6 +46,9 @@ namespace ArchiveNow
             _profilesDirectoryPath = Path.Combine(UserDataDirectoryPath, ProfilesDirectoryName);
 
             _profileRepository = new ArchiveNowProfileRepository(_profilesDirectoryPath, _logger);
+
+            _configurationProvider = new ArchiveNowConfigurationProvider(_configFilePath, _profileRepository);
+            _configuration = _configurationProvider.Read();
 
             //Mapper.Initialize(
             //    config =>
@@ -86,7 +89,7 @@ namespace ArchiveNow
             //                                .Select(entry => entry.Pattern)))
             //            ;
             //    });
-            
+
 
             //var viewModel = new ArchiveNowProfileViewModel();
             //viewModel.Name = "Foo";
@@ -240,7 +243,7 @@ namespace ArchiveNow
 
         private void OpenSettingsWindow()
         {
-            var window = new SettingsWindow(_profileRepository);
+            var window = new SettingsWindow(_configurationProvider, _profileRepository);
             var success = WindowHelper.Launch(window);
         }
 
@@ -302,34 +305,34 @@ namespace ArchiveNow
                 return;
             }
 
-            ArchiveNowConfiguration configuration;
-            try
-            {
-                var configurationProvider = new ArchiveNowConfigurationProvider(_configFilePath, _profileRepository);
-                configuration = configurationProvider.Read();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Invalid configuration file:\n\n{_configFilePath}\n\n{ex.Message}",
-                    $"{ClientName}",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                return;
-            }
+            //ArchiveNowConfiguration configuration;
+            //try
+            //{
+            //    var configurationProvider = new ArchiveNowConfigurationProvider(_configFilePath, _profileRepository);
+            //    configuration = configurationProvider.Read();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(
+            //        $"Invalid configuration file:\n\n{_configFilePath}\n\n{ex.Message}",
+            //        $"{ClientName}",
+            //        MessageBoxButton.OK,
+            //        MessageBoxImage.Error);
+            //    return;
+            //}
 
             IArchiveNowProfile currentProfile = NullArchiveNowProfile.Instance;
 
             try
             {
-                currentProfile = OpenProfile(profileFilePath, configuration);
+                currentProfile = OpenProfile(profileFilePath, _configuration);
             }
             catch (IOException)
             {
                 MessageBox.Show("Profile was not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
-            var service = new ArchiveNowService(configuration, currentProfile, _logger);
+            var service = new ArchiveNowService(_configuration, currentProfile, _logger);
             //var service = new FakeArchiveNowService(configuration, currentProfile, _logger);
 
             foreach (var path in paths)

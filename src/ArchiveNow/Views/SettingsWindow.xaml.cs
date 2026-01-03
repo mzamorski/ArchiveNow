@@ -1,6 +1,9 @@
-﻿using System.Windows;
-
+﻿using ArchiveNow.Configuration;
 using ArchiveNow.Configuration.Profiles;
+using ArchiveNow.Configuration.Readers;
+using ArchiveNow.Views.ViewModels;
+
+using System.Windows;
 
 namespace ArchiveNow.Views
 {
@@ -11,34 +14,30 @@ namespace ArchiveNow.Views
     {
         private readonly IArchiveNowProfileRepository _repository;
 
-        public SettingsWindow(IArchiveNowProfileRepository repository)
+        public SettingsWindow(IConfigurationProvider<ArchiveNowConfiguration> configurationProvider, IArchiveNowProfileRepository repository)
         {
+            InitializeComponent();
+
             _repository = repository;
 
-            InitializeComponent();
+            DataContext = new SettingsViewModel(configurationProvider);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             var profiles = _repository.LoadAll();
-            foreach (var x in profiles)
-            {
-                
-            }
 
             this.ProfilesListView.ItemsSource = profiles;
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void OnSaveClick(object sender, RoutedEventArgs e)
         {
-            var profile = new ArchiveNowProfile();
-            profile.Name = "Visual Studio Project";
-            profile.IgnoredDirectories.Add(".svn");
-            //profile.FileNameBuilder = FileNameBuilderFactory.Build()
+            if (DataContext is SettingsViewModel vm)
+            {
+                vm.Save();
+            }
 
-
-            _repository.Save(profile);
+            Close();
         }
-
     }
 }
