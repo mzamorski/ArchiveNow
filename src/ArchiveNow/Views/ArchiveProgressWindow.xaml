@@ -12,10 +12,6 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterScreen"
         >
-
-    <!--<Window.DataContext>
-        <Views:ArchiveProgressWindow />
-    </Window.DataContext>-->
     
     <Window.TaskbarItemInfo>
         <shell:TaskbarItemInfo />

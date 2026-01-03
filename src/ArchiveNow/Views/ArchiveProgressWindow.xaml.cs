@@ -56,7 +56,7 @@ namespace ArchiveNow.Views
             _path = path;
 
             Title = _service.IsUsingProfile
-                ? $"Archiving... (using profile: \"{_service.Profile.Name}\")"
+                ? $"Archiving... (profile: \"{_service.Profile.Name}\")"
                 : "Archiving...";
 
             _timer = new DispatcherTimer

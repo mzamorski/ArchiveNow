@@ -7,8 +7,8 @@ namespace ArchiveNow.Views.ViewModels
 {
     public class SettingsViewModel : INotifyPropertyChanged
     {
-        private ArchiveNowConfiguration _configuration;
-        private IConfigurationProvider<ArchiveNowConfiguration> _configurationProvider;
+        private readonly ArchiveNowConfiguration _configuration;
+        private readonly IConfigurationProvider<ArchiveNowConfiguration> _configurationProvider;
 
         public ArchiveNowConfiguration Configuration => _configuration;
 

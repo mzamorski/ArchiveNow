@@ -7,9 +7,6 @@ using System.Windows;
 
 namespace ArchiveNow.Views
 {
-    /// <summary>
-    /// Interaction logic for SettingsWindow.xaml
-    /// </summary>
     public partial class SettingsWindow : Window
     {
         private readonly IArchiveNowProfileRepository _repository;
