@@ -1,6 +1,6 @@
 ﻿namespace ArchiveNow.Configuration
 {
-    public class RemoteUploadHostConfiguration
+    public class RemoteUploadServerConfiguration
     {
         public int Port { get; set; }
 

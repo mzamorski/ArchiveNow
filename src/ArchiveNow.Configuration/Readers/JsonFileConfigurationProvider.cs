@@ -32,7 +32,17 @@ namespace ArchiveNow.Configuration.Readers
             {
                 DateFormatString = dateTimeFormat.ShortDatePattern,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                Converters = converters
+                PreserveReferencesHandling = PreserveReferencesHandling.None,
+                Formatting = Formatting.Indented,
+                
+                Converters = converters,
+
+                Error = (sender, args) =>
+                {
+                    Console.WriteLine($"Serialization error: {args.ErrorContext.Error.Message}");
+                    Console.WriteLine($"Path: {args.ErrorContext.Path}");
+                    args.ErrorContext.Handled = true; 
+                }
             };
 
             _jsonSerializer = JsonSerializer.Create(_jsonSettings);
@@ -58,12 +68,14 @@ namespace ArchiveNow.Configuration.Readers
 
         public void Write(T configuration, string filePath)
         {
-            //var json = JsonConvert.SerializeObject(configuration, Formatting.Indented, _jsonSettings);
-            //File.WriteAllText(_filePath, json);
-
-            using (var writer = new StreamWriter(filePath))
+            using (var streamWriter = new StreamWriter(filePath))
+            using (var jsonWriter = new JsonTextWriter(streamWriter))
             {
-                _jsonSerializer.Serialize(writer, configuration, typeof(T));
+                jsonWriter.Formatting = Formatting.Indented;
+                jsonWriter.Indentation = 4;
+                jsonWriter.IndentChar = ' ';
+
+                _jsonSerializer.Serialize(jsonWriter, configuration);
             }
         }
 

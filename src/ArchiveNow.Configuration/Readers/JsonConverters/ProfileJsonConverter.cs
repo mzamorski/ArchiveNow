@@ -19,7 +19,14 @@ namespace ArchiveNow.Configuration.Readers.JsonConverters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var profile = value as IArchiveNowProfile;
+            if (profile == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            writer.WriteValue(profile.Name);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

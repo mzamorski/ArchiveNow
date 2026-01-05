@@ -26,7 +26,7 @@ namespace ArchiveNow.Configuration
 
         public bool HasDefaultProfile => !DefaultProfile.IsEmpty;
 
-        public RemoteUploadHostConfiguration RemoteUploadHost { get; set; } = new RemoteUploadHostConfiguration();
+        public RemoteUploadServerConfiguration RemoteUploadServer { get; set; } = new RemoteUploadServerConfiguration();
 
         public override string ToString()
         {
@@ -39,7 +39,7 @@ namespace ArchiveNow.Configuration
                 builder.AppendLine($"[{item.Key}] -> {{{item.Value}}}");
             }
 
-            builder.AppendLine($"RemoteUploadHost: {RemoteUploadHost}");
+            builder.AppendLine($"RemoteUploadServer: {RemoteUploadServer}");
 
             return builder.ToString();
         }
