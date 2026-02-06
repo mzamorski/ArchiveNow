@@ -8,6 +8,8 @@ namespace ArchiveNow.RemoteUpload.Server
 
         public string UploadsDirectory { get; set; } = string.Empty;
 
+        public string AccessSecret { get; set; } = string.Empty;
+
         public static RemoteUploadConfiguration Load(string path)
         {
             if (!File.Exists(path))

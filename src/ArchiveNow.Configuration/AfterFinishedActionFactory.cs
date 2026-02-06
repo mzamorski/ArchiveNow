@@ -53,7 +53,8 @@ namespace ArchiveNow.Configuration
                     var remoteContext = new SendToArchiveNowContext
                     {
                         Host = GetValue<string>(parameters, "Host"),
-                        Port = GetValue<int>(parameters, "Port")
+                        Port = GetValue<int>(parameters, "Port"),
+                        Secret = GetValue<string>(parameters, "Secret")
                     };
 
                     creator = (() => new SendToArchiveNowAction(remoteContext));

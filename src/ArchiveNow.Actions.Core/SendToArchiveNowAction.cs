@@ -18,6 +18,7 @@ namespace ArchiveNow.Actions.Core
     {
         private readonly string _host;
         private readonly int _port;
+        private readonly string _secret;
 
         public override string Description => "Sending to remote instance...";
 
@@ -27,6 +28,7 @@ namespace ArchiveNow.Actions.Core
             if (context == null) throw new ArgumentNullException(nameof(context));
             _host = context.Host;
             _port = context.Port;
+            _secret = context.Secret;
         }
 
         public override IAfterFinishedActionResult Execute(IAfterFinishedActionContext context)
@@ -45,6 +47,7 @@ namespace ArchiveNow.Actions.Core
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                     content.Headers.Add("X-FileName", fileName);
                     content.Headers.Add("X-Client-Host", Environment.MachineName);
+                    content.Headers.Add("X-Access-Secret", _secret);
 
                     var response = client.PostAsync(target, content).Result;
                     if (!response.IsSuccessStatusCode)
