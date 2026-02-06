@@ -55,9 +55,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ArchiveNow.Shell\ArchiveNow.Shell.csproj">
-      <Project>{1C17737C-6AAF-47FD-9F23-6270E897B40C}</Project>
-      <Name>ArchiveNow.Shell</Name>
+    <ProjectReference Include="..\..\..\ArchiveNow.Core\ArchiveNow.Core.csproj">
+      <Project>{7076bf8a-260a-4972-9694-7e6a9b61cd61}</Project>
+      <Name>ArchiveNow.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

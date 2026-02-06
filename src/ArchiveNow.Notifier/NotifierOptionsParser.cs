@@ -10,6 +10,10 @@ namespace ArchiveNow.Notifier
         {
             var p = new FluentCommandLineParser<NotifierOptions>();
 
+            p.Setup(o => o.Path)
+               .As("path")
+               .WithDescription("Path to the file");
+
             p.Setup(o => o.Title)
                 .As("title")
                 .WithDescription("Title of the toast notification");

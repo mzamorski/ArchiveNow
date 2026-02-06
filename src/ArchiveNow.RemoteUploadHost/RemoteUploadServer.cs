@@ -1,11 +1,15 @@
 ﻿using System.Net;
 using System.Text;
 using System.Collections.Concurrent;
+using System.Data;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using ArchiveNow.Core.CommandLineBuilder;
+using ArchiveNow.Utils;
 using ArchiveNow.WinUtils;
-using System.Data;
 
 namespace ArchiveNow.RemoteUpload.Server;
 
@@ -249,15 +253,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             "File received" + "\n" +
             $"• Host: {client}" + "\n" +
             $"• File: {fileName}" + "\n" +
-            $"• Size: {FormatSize(sizeBytes)}";
-    }
-
-    private static string FormatSize(long bytes)
-    {
-        string[] u = { "B", "KB", "MB", "GB", "TB" };
-        double b = bytes; int i = 0;
-        while (b >= 1024 && i < u.Length - 1) { b /= 1024; i++; }
-        return $"{b:0.##} {u[i]}";
+            $"• Size: {sizeBytes.FormatSize()}";
     }
 
     private void Notify(string client, FileInfo file)
@@ -275,10 +271,13 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
 
             const string title = "Server";
             var size = file.Length;
-            
-            var argsLine =
-                $"--title \"{title}\" " +
-                $"--message \"File <{file.Name}> from host <{client}>\" ";
+
+            var builder = new ArchiveNowNotifierCommandLineBuilder()
+                .WithTitle(title)
+                .WithMessage($"File <{file.Name}> from host <{client}>")
+                .WithPath(file.FullName);
+
+            var argsLine = builder.ToString();
 
             bool success = InteractiveProcessLauncher.LaunchInActiveSession(path, argsLine);
             if (!success)

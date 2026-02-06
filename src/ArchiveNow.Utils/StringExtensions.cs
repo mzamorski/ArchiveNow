@@ -60,5 +60,25 @@ namespace ArchiveNow.Utils
                 Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
             }
         }
+
+        /// <summary>
+        /// Formats the byte count into a human-readable string (e.g., KB, MB, GB).
+        /// </summary>
+        /// <param name="bytes">The number of bytes.</param>
+        /// <returns>A formatted string.</returns>
+        public static string FormatSize(this long bytes)
+        {
+            string[] u = { "B", "KB", "MB", "GB", "TB" };
+            double b = bytes;
+            int i = 0;
+
+            while (b >= 1024 && i < u.Length - 1)
+            {
+                b /= 1024;
+                i++;
+            }
+
+            return $"{b:0.##} {u[i]}";
+        }
     }
 }

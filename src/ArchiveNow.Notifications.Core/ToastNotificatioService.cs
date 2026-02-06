@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
-
+using System.Diagnostics;
+using System.IO;
 using Windows.Foundation.Collections;
 using Windows.UI.Notifications;
 
@@ -9,13 +10,21 @@ namespace ArchiveNow.Notifications.Core
     {
         public ToastNotificatioService()
         {
-            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            ToastNotificationManagerCompat.OnActivated += args =>
             {
-                // Obtain the arguments from the notification
-                ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+                ToastArguments toastArgs = ToastArguments.Parse(args.Argument);
 
-                // Obtain any user input (text boxes, menu selections) from the notification
-                ValueSet userInput = toastArgs.UserInput;
+                if (toastArgs.TryGetValue("Folder", out string folderPath))
+                {
+                    if (Directory.Exists(folderPath))
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = folderPath,
+                            UseShellExecute = true
+                        });
+                    }
+                }
             };
         }
 
@@ -41,9 +50,9 @@ namespace ArchiveNow.Notifications.Core
                 .AddText(msg.Body)
                 .SetToastScenario(ToastScenario.Alarm);
 
-            if (!string.IsNullOrEmpty(msg.LaunchArgs))
+            if (!string.IsNullOrEmpty(msg.Folder))
             {
-                builder.AddArgument("launch", msg.LaunchArgs);
+                builder.AddArgument("Folder", msg.Folder);
             }
 
             var notif = new ToastNotification(builder.GetToastContent().GetXml());

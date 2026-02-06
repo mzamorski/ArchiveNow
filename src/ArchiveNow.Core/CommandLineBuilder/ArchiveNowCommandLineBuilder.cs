@@ -2,9 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using ArchiveNow.Utils;
 
-namespace ArchiveNow.Shell.CommandLineBuilder
+namespace ArchiveNow.Core.CommandLineBuilder
 {
     public class ArchiveNowCommandLineBuilder
     {
