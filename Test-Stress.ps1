@@ -28,7 +28,7 @@ for ($i = 1; $i -le $Iterations; $i++) {
             $statusCode = [int]$_.Exception.Response.StatusCode
             
             if ($statusCode -eq 429) {
-                Write-Host "[$i] Status: $statusCode - BLOCKED (RATE LIMIT)" -ForegroundColor Red
+                Write-Host "[$i] Status: $statusCode - BLOCKED (Rate Limit)" -ForegroundColor Red
             }
             elseif ($statusCode -eq 401) {
                 Write-Host "[$i] Status: $statusCode - UNAUTHORIZED (Check Secret)" -ForegroundColor Magenta
