@@ -17,6 +17,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
 {
     private readonly ILogger<RemoteUploadService> _logger;
     private readonly RemoteUploadConfiguration _config;
+    private readonly RequestSecurityValidator _securityValidator;
     private readonly HttpListener _listener = new();
     private readonly ConcurrentBag<Task> _inFlight = new();
     
@@ -29,6 +30,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
     {
         _logger = logger;
         _config = options.Value;
+        _securityValidator = new RequestSecurityValidator(options, logger);
 
         if (string.IsNullOrWhiteSpace(_config.UploadsDirectory))
         {
@@ -43,8 +45,6 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Starting HTTP listener on port {Port}", _config.Port);
-
         try
         {
             _listener.Start();
@@ -58,29 +58,25 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             throw;
         }
 
+        _logger.LogInformation("Listening on port {Port}...", _config.Port);
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            HttpListenerContext? context = null;
-
             try
             {
-                context = await _listener.GetContextAsync().ConfigureAwait(false);
+                var context = await _listener.GetContextAsync();
 
-                string clientIp = context.Request.RemoteEndPoint?.Address.ToString() ?? "unknown";
-                if (IsRateLimited(clientIp))
+                if (!_securityValidator.Validate(context))
                 {
-                    // Rate limit exceeded
-                    context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
-                    context.Response.Close();
-
-                    _logger.LogWarning($"Rate limit exceeded for IP: {clientIp}");
-
-                    continue; // Skip processing this request
+                    continue;
                 }
+
+                await ProcessRequestAsync(context, stoppingToken);
             }
-            catch (HttpListenerException) when (!_listener.IsListening || stoppingToken.IsCancellationRequested)
+            catch (HttpListenerException) when (stoppingToken.IsCancellationRequested)
             {
-                break; // Stopped by StopAsync()
+                // Graceful shutdown
+                break;
             }
             catch (ObjectDisposedException) when (stoppingToken.IsCancellationRequested)
             {
@@ -88,18 +84,19 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Accept failed");
-
-                continue;
+                _logger.LogError(ex, "Error handling request");
             }
-
-            var task = HandleContextAsync(context, stoppingToken);
-            _inFlight.Add(task);
-
-            _ = task.ContinueWith(_ => { }, TaskScheduler.Default);
         }
+    }
 
-        _logger.LogInformation("Listener loop exiting");
+    private Task ProcessRequestAsync(HttpListenerContext context, CancellationToken stoppingToken)
+    {
+        var task = HandleContextAsync(context, stoppingToken);
+        _inFlight.Add(task);
+
+        _ = task.ContinueWith(_ => { }, TaskScheduler.Default);
+
+        return Task.CompletedTask;
     }
 
     private async Task HandleContextAsync(HttpListenerContext context, CancellationToken ct)
@@ -111,26 +108,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             var req = context.Request;
             var res = context.Response;
 
-            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote}",
-                req.HttpMethod, req.RawUrl, req.RemoteEndPoint);
-
-            var accessSecret = req.Headers["X-Access-Secret"];
-            if (string.IsNullOrWhiteSpace(accessSecret) || accessSecret != _config.AccessSecret)
-            {
-                _logger.LogWarning("Unauthorized request blocked from {Remote}", req.RemoteEndPoint);
-
-                res.StatusCode = (int)HttpStatusCode.Unauthorized;
-                res.Close();
-
-                return;
-            }
-
-            if (!string.Equals(req.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
-            {
-                res.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
-                res.Close();
-                return;
-            }
+            _logger.LogInformation("Incoming request {HttpMethod} {RawUrl} from {Remote}", req.HttpMethod, req.RawUrl, req.RemoteEndPoint);
 
             var folder = GetClientFolderName(req);
             var safeName = GetSafeFileName(req);
@@ -199,36 +177,6 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             _listener.Stop();
         _listener.Close();
         base.Dispose();
-    }
-
-    /// <summary>
-    /// Checks if the request from the given IP address should be rate limited.
-    /// Uses a fixed window strategy (resets count every minute).
-    /// </summary>
-    /// <param name="ip">Client IP address.</param>
-    /// <returns>True if the limit is exceeded; otherwise, false.</returns>
-    private bool IsRateLimited(string ip)
-    {
-        var now = DateTime.UtcNow;
-        var limit = _config.MaxRequestsPerMinute;
-
-        var stats = _ipRateLimits.AddOrUpdate(ip,
-            // Add new entry
-            (1, now),
-            // Update existing entry
-            (key, oldStats) =>
-            {
-                if ((now - oldStats.WindowStart).TotalMinutes >= 1)
-                {
-                    // Reset window if more than a minute has passed
-                    return (1, now);
-                }
-
-                // Increment count within the current window
-                return (oldStats.Count + 1, oldStats.WindowStart);
-            });
-
-        return stats.Count > limit;
     }
 
     private static string GetSafeFileName(HttpListenerRequest req)
@@ -306,15 +254,6 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
         }
 
         return sb.ToString();
-    }
-
-    private static string BuildUploadBody(string client, string fileName, long sizeBytes)
-    {
-        return
-            "File received" + "\n" +
-            $"• Host: {client}" + "\n" +
-            $"• File: {fileName}" + "\n" +
-            $"• Size: {sizeBytes.FormatSize()}";
     }
 
     private void Notify(string client, FileInfo file)
