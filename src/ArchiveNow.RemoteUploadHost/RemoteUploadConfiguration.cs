@@ -10,6 +10,11 @@ namespace ArchiveNow.RemoteUpload.Server
 
         public string AccessSecret { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Maximum number of upload requests allowed per minute from a single IP address.
+        /// </summary>
+        public int MaxRequestsPerMinute { get; set; } = 60;
+
         public static RemoteUploadConfiguration Load(string path)
         {
             if (!File.Exists(path))
