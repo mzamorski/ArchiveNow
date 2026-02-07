@@ -56,7 +56,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Configuration.St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Providers.Listing", "ArchiveNow.Providers.Listing\ArchiveNow.Providers.Listing.csproj", "{9DE82421-3B3F-4B89-8585-7E87F615B1D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.RemoteUpload.Server", "ArchiveNow.RemoteUploadHost\ArchiveNow.RemoteUpload.Server.csproj", "{50B7F9F1-7830-4377-A47A-281F958998E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.RemoteUpload.Server", "ArchiveNow.RemoteUpload.Server\ArchiveNow.RemoteUpload.Server.csproj", "{50B7F9F1-7830-4377-A47A-281F958998E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveNow.Notifications.Core", "ArchiveNow.Notifications.Core\ArchiveNow.Notifications.Core.csproj", "{B611831B-D5A6-46A2-9CEB-B0DD70BC812A}"
 EndProject

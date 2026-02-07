@@ -54,12 +54,14 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             _logger.LogError(ex,
                 "Failed to start HttpListener on port {Port}. If running as a service, you likely need a URLACL for the service account.",
                 _config.Port);
+
             throw;
         }
 
         while (!stoppingToken.IsCancellationRequested)
         {
             HttpListenerContext? context = null;
+
             try
             {
                 context = await _listener.GetContextAsync().ConfigureAwait(false);
@@ -78,7 +80,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             }
             catch (HttpListenerException) when (!_listener.IsListening || stoppingToken.IsCancellationRequested)
             {
-                break; // stopped by StopAsync()
+                break; // Stopped by StopAsync()
             }
             catch (ObjectDisposedException) when (stoppingToken.IsCancellationRequested)
             {
@@ -87,109 +89,17 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Accept failed");
+
                 continue;
             }
 
             var task = HandleContextAsync(context, stoppingToken);
-
             _inFlight.Add(task);
 
             _ = task.ContinueWith(_ => { }, TaskScheduler.Default);
         }
 
         _logger.LogInformation("Listener loop exiting");
-    }
-
-    /// <summary>
-    /// Checks if the request from the given IP address should be rate limited.
-    /// Uses a fixed window strategy (resets count every minute).
-    /// </summary>
-    /// <param name="ip">Client IP address.</param>
-    /// <returns>True if the limit is exceeded; otherwise, false.</returns>
-    private bool IsRateLimited(string ip)
-    {
-        var now = DateTime.UtcNow;
-        var limit = _config.MaxRequestsPerMinute; 
-
-        var stats = _ipRateLimits.AddOrUpdate(ip,
-            // Add new entry
-            (1, now),
-            // Update existing entry
-            (key, oldStats) =>
-            {
-                if ((now - oldStats.WindowStart).TotalMinutes >= 1)
-                {
-                    // Reset window if more than a minute has passed
-                    return (1, now);
-                }
-                // Increment count within the current window
-                return (oldStats.Count + 1, oldStats.WindowStart);
-            });
-
-        return stats.Count > limit;
-    }
-
-    private static string GetSafeFileName(HttpListenerRequest req)
-    {
-        var fileName = req.Headers["X-FileName"];
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            fileName = $"upload_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
-        }
-
-        // Replace invalid Windows characters with underscores
-        var safeName = string.Join("_",
-            fileName.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
-
-        return safeName;
-    }
-
-    static string GetClientFolderName(HttpListenerRequest req)
-    {
-        // 1) Prefer custom header (client-provided machine name)
-        var candidate = req.Headers["X-Client-Host"];
-
-        // 2) If behind a reverse proxy, take the first IP from X-Forwarded-For
-        if (string.IsNullOrWhiteSpace(candidate))
-        {
-            var xff = req.Headers["X-Forwarded-For"];
-            if (!string.IsNullOrWhiteSpace(xff))
-                candidate = xff.Split(',')[0].Trim();
-        }
-
-        //// 3) Fallback to the remote IP from the connection (Kestrel)
-        if (string.IsNullOrWhiteSpace(candidate))
-            candidate = req.RemoteEndPoint.Address.ToString();
-
-        // 4) Normalize IP and map loopback to "localhost"
-        if (!string.IsNullOrWhiteSpace(candidate) && IPAddress.TryParse(candidate, out var ip))
-        {
-            if (ip.IsIPv4MappedToIPv6)
-                ip = ip.MapToIPv4();
-
-            if (IPAddress.IsLoopback(ip))
-                candidate = "localhost"; // ::1 or 127.0.0.1
-            else
-                candidate = ip.ToString(); // normalized textual representation
-        }
-
-        // 5) Default
-        if (string.IsNullOrWhiteSpace(candidate))
-            candidate = "__UNKNOWN_HOST";
-
-        return SanitizeForDirectory(candidate);
-    }
-
-    static string SanitizeForDirectory(string name)
-    {
-        // Replace characters invalid for file/directory names with underscores
-        var invalid = Path.GetInvalidFileNameChars();
-        var sb = new StringBuilder(name.Length);
-
-        foreach (var ch in name)
-            sb.Append(invalid.Contains(ch) || ch is ':' or '/' or '\\' ? '_' : ch);
-
-        return sb.ToString();
     }
 
     private async Task HandleContextAsync(HttpListenerContext context, CancellationToken ct)
@@ -260,7 +170,7 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             catch { /* ignore */ }
         }
     }
-
+    
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Stopping service…");
@@ -289,6 +199,113 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
             _listener.Stop();
         _listener.Close();
         base.Dispose();
+    }
+
+    /// <summary>
+    /// Checks if the request from the given IP address should be rate limited.
+    /// Uses a fixed window strategy (resets count every minute).
+    /// </summary>
+    /// <param name="ip">Client IP address.</param>
+    /// <returns>True if the limit is exceeded; otherwise, false.</returns>
+    private bool IsRateLimited(string ip)
+    {
+        var now = DateTime.UtcNow;
+        var limit = _config.MaxRequestsPerMinute;
+
+        var stats = _ipRateLimits.AddOrUpdate(ip,
+            // Add new entry
+            (1, now),
+            // Update existing entry
+            (key, oldStats) =>
+            {
+                if ((now - oldStats.WindowStart).TotalMinutes >= 1)
+                {
+                    // Reset window if more than a minute has passed
+                    return (1, now);
+                }
+
+                // Increment count within the current window
+                return (oldStats.Count + 1, oldStats.WindowStart);
+            });
+
+        return stats.Count > limit;
+    }
+
+    private static string GetSafeFileName(HttpListenerRequest req)
+    {
+        var fileName = req.Headers["X-FileName"];
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            fileName = $"upload_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        }
+
+        // Replace invalid Windows characters with underscores
+        var safeName = string.Join("_",
+            fileName.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
+
+        return safeName;
+    }
+
+    private static string GetClientFolderName(HttpListenerRequest req)
+    {
+        // 1) Prefer custom header (client-provided machine name)
+        var candidate = req.Headers["X-Client-Host"];
+
+        // 2) If behind a reverse proxy, take the first IP from X-Forwarded-For
+        if (string.IsNullOrWhiteSpace(candidate))
+        {
+            var xff = req.Headers["X-Forwarded-For"];
+            if (!string.IsNullOrWhiteSpace(xff))
+            {
+                candidate = xff.Split(',')[0].Trim();
+            }
+        }
+
+        // 3) Fallback to the remote IP from the connection (Kestrel)
+        if (string.IsNullOrWhiteSpace(candidate))
+        {
+            candidate = req.RemoteEndPoint.Address.ToString();
+        }
+
+        // 4) Normalize IP and map loopback to "localhost"
+        if (!string.IsNullOrWhiteSpace(candidate) && IPAddress.TryParse(candidate, out var ip))
+        {
+            if (ip.IsIPv4MappedToIPv6)
+            {
+                ip = ip.MapToIPv4();
+            }
+
+            if (IPAddress.IsLoopback(ip))
+            {
+                candidate = "localhost"; // ::1 or 127.0.0.1
+            }
+            else
+            {
+                candidate = ip.ToString(); // normalized textual representation
+            }
+        }
+
+        // 5) Default
+        if (string.IsNullOrWhiteSpace(candidate))
+        {
+            candidate = "__UNKNOWN_HOST";
+        }
+
+        return SanitizeForDirectory(candidate);
+    }
+
+    private static string SanitizeForDirectory(string name)
+    {
+        // Replace characters invalid for file/directory names with underscores
+        var invalid = Path.GetInvalidFileNameChars();
+        var sb = new StringBuilder(name.Length);
+
+        foreach (var ch in name)
+        {
+            sb.Append(invalid.Contains(ch) || ch is ':' or '/' or '\\' ? '_' : ch);
+        }
+
+        return sb.ToString();
     }
 
     private static string BuildUploadBody(string client, string fileName, long sizeBytes)
