@@ -3,6 +3,10 @@ $config = "C:\Program Files (x86)\ArchiveNow\ArchiveNow.conf"
 
 setx ARCHIVENOW_CONFIG "`"$config`"" /M
 
+if (-not [System.Diagnostics.EventLog]::SourceExists("ArchiveNow.Server")) {
+    New-EventLog -LogName Application -Source "ArchiveNow.Server"
+}
+
 New-Service `
   -Name "ArchiveNowServer" `
   -BinaryPathName "`"$exe`"" `

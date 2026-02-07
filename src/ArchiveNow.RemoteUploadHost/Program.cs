@@ -49,7 +49,14 @@ Host.CreateDefaultBuilder(args)
     {
         logging.ClearProviders();
         logging.AddConsole();
-        logging.AddEventLog(o => o.SourceName = "ArchiveNow.RemoteUploadServer");
+        logging.AddEventLog(o =>
+        {
+            // Name of the source we registered in Windows
+            o.SourceName = "ArchiveNow.Server";
+
+            // Ensure it points to the correct Log (e.g., Application)
+            o.LogName = "Application";
+        });
 
         // Optional: log where the config was loaded from
         if (ctx.Properties.TryGetValue("ArchiveNow:ConfigPath", out var pathObj) && pathObj is string path)
