@@ -205,15 +205,15 @@ public sealed class RemoteUploadService : BackgroundService, IDisposable
                 req.HttpMethod, req.RawUrl, req.RemoteEndPoint);
 
             var accessSecret = req.Headers["X-Access-Secret"];
-            //if (string.IsNullOrWhiteSpace(accessSecret) || accessSecret != _config.AccessSecret)
-            //{
-            //    _logger.LogWarning("Unauthorized request blocked from {Remote}", req.RemoteEndPoint);
+            if (string.IsNullOrWhiteSpace(accessSecret) || accessSecret != _config.AccessSecret)
+            {
+                _logger.LogWarning("Unauthorized request blocked from {Remote}", req.RemoteEndPoint);
 
-            //    res.StatusCode = (int)HttpStatusCode.Unauthorized; 
-            //    res.Close();
+                res.StatusCode = (int)HttpStatusCode.Unauthorized;
+                res.Close();
 
-            //    return;
-            //}
+                return;
+            }
 
             if (!string.Equals(req.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
             {
