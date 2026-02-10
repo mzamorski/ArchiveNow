@@ -87,6 +87,20 @@ public class RequestSecurityValidator(IOptions<RemoteUploadConfiguration> option
             return false;
         }
 
+        // File Size Check.
+
+        if (_config.MaxFileSizeInBytes > 0 && request.ContentLength64 > _config.MaxFileSizeInBytes)
+        {
+            _logger.LogWarning("Payload too large from {ClientIp}: {Size} bytes. Limit: {Limit} bytes.",
+                clientIp, request.ContentLength64, _config.MaxFileSizeInBytes);
+
+            response.StatusCode = (int)HttpStatusCode.RequestEntityTooLarge;
+            response.StatusDescription = "File too large";
+            response.Close();
+
+            return false;
+        }
+
         return true;
     }
 

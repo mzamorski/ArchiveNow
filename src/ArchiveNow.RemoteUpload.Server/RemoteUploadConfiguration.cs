@@ -15,6 +15,11 @@ namespace ArchiveNow.RemoteUpload.Server
         /// </summary>
         public int MaxRequestsPerMinute { get; set; } = 60;
 
+        /// <summary>
+        /// Define a sensible default for file uploads to prevent server abuse.
+        /// </summary>
+        public long MaxFileSizeInBytes { get; set; } = 100 * (1024 * 1024); // 100 MB
+
         public static RemoteUploadConfiguration Load(string path)
         {
             if (!File.Exists(path))
