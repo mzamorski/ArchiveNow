@@ -4,7 +4,7 @@
 	<RunWixToolsOutOfProc Condition=" '$(PROCESSOR_ARCHITECTURE)'!='x86' ">true</RunWixToolsOutOfProc>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>3.10</ProductVersion>
+    <ProductVersion>4.0</ProductVersion>
     <ProjectGuid>ba5b3b52-71ac-4670-95f3-630a7d4d754c</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>ArchiveNow.Setup</OutputName>
